@@ -7,7 +7,9 @@ import 'package:connectivity/connectivity.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Models/User.dart';
 import '../../Models/create_permission.dart';
 import '../../Models/invitation_update.dart';
 import '../../widgets/Loading_dialog.dart';
@@ -29,6 +31,10 @@ class _GatePermissionState extends State<GatePermission> {
   String fromError = "";
   String dateTo = "";
   String toError = "";
+  String userId = "";
+  String email = "";
+  String role = "";
+  bool isLogged = false;
 
   TextEditingController fromDateController = TextEditingController();
   TextEditingController toDateController = TextEditingController();
@@ -87,7 +93,13 @@ class _GatePermissionState extends State<GatePermission> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Gate Permission'),
+        title: Text(
+          getTranslated(context, "newGatePerm")!,
+          style: TextStyle(
+            color: Colors.black,
+            fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+          ),
+        ),
       ),
       // Body is 2 textforminput and 1 button
       body: SingleChildScrollView(
@@ -114,12 +126,16 @@ class _GatePermissionState extends State<GatePermission> {
                   ),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Guest Name',
-                      hintText: 'Enter Guest Name',
+                      labelText: getTranslated(context, "guestName"),
+                      hintText: getTranslated(context, "enterGuestName"),
                       labelStyle:
-                          const TextStyle(color: Colors.black, fontSize: 14.0),
+                           TextStyle(color: Colors.black, fontSize: 14.0,
+                             fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                           ),
                       hintStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 13.0),
+                           TextStyle(color: Colors.grey, fontSize: 13.0,
+                             fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                           ),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
                             const BorderSide(color: Colors.black, width: 1.0),
@@ -137,7 +153,7 @@ class _GatePermissionState extends State<GatePermission> {
                         // Input field to show error
                         setState(() {
                           guestNameError =
-                              'Must not be Empty'; // Customize the error message
+                          getTranslated(context, "notValidName")!; // Customize the error message
                         });
                       } else {
                         setState(() {
@@ -150,9 +166,10 @@ class _GatePermissionState extends State<GatePermission> {
                 ),
                 Text(
                   guestNameError,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     color: Colors.red,
                     fontSize: 12.0,
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                   ),
                 ),
                 SizedBox(
@@ -165,17 +182,20 @@ class _GatePermissionState extends State<GatePermission> {
                   ),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Description',
-                      hintText: 'Add Description',
-                      labelStyle: const TextStyle(
+                      labelText: getTranslated(context, "desc"),
+                      hintText: getTranslated(context, "enterDesc"),
+                      labelStyle:  TextStyle(
                         color: Colors.black,
                         fontSize: 14.0,
+                        fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                       ),
                       hintStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 13.0),
+                           TextStyle(color: Colors.grey, fontSize: 13.0,
+                             fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                           ),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
+                             BorderSide(color: Colors.black, width: 1.0),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                       enabledBorder: OutlineInputBorder(
@@ -191,7 +211,7 @@ class _GatePermissionState extends State<GatePermission> {
                         // Input field to show error
                         setState(() {
                           descError =
-                              'Must not be Empty'; // Customize the error message
+                          getTranslated(context, "notValidDesc")!; // Customize the error message
                         });
                       } else {
                         setState(() {
@@ -204,9 +224,10 @@ class _GatePermissionState extends State<GatePermission> {
                 ),
                 Text(
                   descError,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     color: Colors.red,
                     fontSize: 12.0,
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                   ),
                 ),
                 Padding(
@@ -232,10 +253,14 @@ class _GatePermissionState extends State<GatePermission> {
                           child: TextFormField(
                             controller: fromDateController,
                             decoration: InputDecoration(
-                              labelText: 'Visit From',
-                              hintText: 'Select Date From',
-                              hintStyle: TextStyle(color: Colors.black),
-                              // labelStyle: TextStyle(color: Colors.black),
+                              labelText: getTranslated(context, "visitFrom"),
+                              hintText: getTranslated(context, "enterDateFrom"),
+                              hintStyle: TextStyle(color: Colors.black,
+                                fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                              ),
+                              labelStyle: TextStyle(color: Colors.black,
+                                fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                              ),
                             ),
                             enabled: false,
                             onChanged: (value) {
@@ -243,7 +268,7 @@ class _GatePermissionState extends State<GatePermission> {
                                 // Input field to show error
                                 setState(() {
                                   fromError =
-                                      'Must not be Empty'; // Customize the error message
+                                  getTranslated(context, "notValidDate")!; // Customize the error message
                                 });
                               } else {
                                 setState(() {
@@ -257,9 +282,10 @@ class _GatePermissionState extends State<GatePermission> {
                       ),
                       Text(
                         fromError,
-                        style: const TextStyle(
+                        style:  TextStyle(
                           color: Colors.red,
                           fontSize: 12.0,
+                          fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                         ),
                       ),
                       SizedBox(
@@ -283,8 +309,14 @@ class _GatePermissionState extends State<GatePermission> {
                           child: TextFormField(
                             controller: toDateController,
                             decoration: InputDecoration(
-                              labelText: 'Visit To',
-                              hintText: 'Select Date To',
+                              labelText: getTranslated(context, "visitTo"),
+                              hintText: getTranslated(context, "enterDateTo"),
+                              hintStyle: TextStyle(color: Colors.black,
+                                fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                              ),
+                              labelStyle: TextStyle(color: Colors.black,
+                                fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                              ),
                             ),
                             enabled: false,
                             onChanged: (value) {
@@ -293,7 +325,7 @@ class _GatePermissionState extends State<GatePermission> {
                                 // Input field to show error
                                 setState(() {
                                   toError =
-                                      'Must not be Empty'; // Customize the error message
+                                  getTranslated(context, "notValidDate")!; // Customize the error message
                                 });
                               } else {
                                 setState(() {
@@ -307,9 +339,10 @@ class _GatePermissionState extends State<GatePermission> {
                       ),
                       Text(
                         toError,
-                        style: const TextStyle(
+                        style:  TextStyle(
                           color: Colors.red,
                           fontSize: 12.0,
+                          fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                         ),
                       ),
                     ],
@@ -324,19 +357,19 @@ class _GatePermissionState extends State<GatePermission> {
                   onTap: () {
                     if (guestName.isEmpty) {
                       setState(() {
-                        guestNameError = 'Must not be Empty';
+                        guestNameError = getTranslated(context, "notValidName")!;
                       });
                     } else if (desc.isEmpty) {
                       setState(() {
-                        descError = 'Must not be Empty';
+                        descError = getTranslated(context, "notValidDesc")!;
                       });
                     } else if (dateFrom.isEmpty) {
                       setState(() {
-                        fromError = 'Must not be Empty';
+                        fromError = getTranslated(context, "notValidDate")!;
                       });
                     } else if (dateTo.isEmpty) {
                       setState(() {
-                        toError = 'Must not be Empty';
+                        toError = getTranslated(context, "notValidDate")!;
                       });
                     } else
                       createGatePermission();
@@ -357,6 +390,7 @@ class _GatePermissionState extends State<GatePermission> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
+                          fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                         ),
                       ),
                     ),
@@ -386,9 +420,9 @@ class _GatePermissionState extends State<GatePermission> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': '29',
-            'role': 'owner',
-            'language': '',
+            'userId': userId,
+            'role': role,
+            'language': _getCurrentLang(),
             'guest_name': guestName,
             'description': desc,
             'date_from': dateFrom,
@@ -452,6 +486,24 @@ class _GatePermissionState extends State<GatePermission> {
   Future<bool> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult != ConnectivityResult.none;
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 
   @override

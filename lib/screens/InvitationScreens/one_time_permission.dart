@@ -8,7 +8,9 @@ import 'package:connectivity/connectivity.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Models/User.dart';
 import '../../widgets/Loading_dialog.dart';
 
 class OneTimePermission extends StatefulWidget {
@@ -24,12 +26,23 @@ class _OneTimePermissionState extends State<OneTimePermission> {
   String descError = "";
   String guestName = "";
   String guestNameError = "";
+  String userId = "";
+  String email = "";
+  String role = "";
+  bool isLogged = false;
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New One Time Permission'),
+        title: Text(getTranslated(context, "newOneTimePass")!,
+          style: TextStyle(
+            color: Colors.black,
+            fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -55,20 +68,24 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                   ),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Guest Name',
-                      hintText: 'Enter Guest Name',
+                      labelText: getTranslated(context, "guestName"),
+                      hintText: getTranslated(context, "enterGuestName"),
                       labelStyle:
-                          const TextStyle(color: Colors.black, fontSize: 14.0),
+                      TextStyle(color: Colors.black, fontSize: 14.0,
+                        fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                      ),
                       hintStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 13.0),
+                      TextStyle(color: Colors.grey, fontSize: 13.0,
+                        fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
+                        const BorderSide(color: Colors.black, width: 1.0),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
+                        const BorderSide(color: Colors.black, width: 1.0),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                     ),
@@ -78,7 +95,7 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                         // Input field to show error
                         setState(() {
                           guestNameError =
-                              'Must not be Empty'; // Customize the error message
+                          getTranslated(context, "notValidName")!; // Customize the error message
                         });
                       } else {
                         setState(() {
@@ -91,9 +108,10 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                 ),
                 Text(
                   guestNameError,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     color: Colors.red,
                     fontSize: 12.0,
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                   ),
                 ),
                 SizedBox(
@@ -106,22 +124,25 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                   ),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Description',
-                      hintText: 'Add Description',
-                      labelStyle: const TextStyle(
+                      labelText: getTranslated(context, "desc"),
+                      hintText: getTranslated(context, "enterDesc"),
+                      labelStyle:  TextStyle(
                         color: Colors.black,
                         fontSize: 14.0,
+                        fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                       ),
                       hintStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 13.0),
+                      TextStyle(color: Colors.grey, fontSize: 13.0,
+                        fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
+                        BorderSide(color: Colors.black, width: 1.0),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
+                        const BorderSide(color: Colors.black, width: 1.0),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                     ),
@@ -132,7 +153,7 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                         // Input field to show error
                         setState(() {
                           descError =
-                              'Must not be Empty'; // Customize the error message
+                          getTranslated(context, "notValidDesc")!; // Customize the error message
                         });
                       } else {
                         setState(() {
@@ -145,9 +166,10 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                 ),
                 Text(
                   descError,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     color: Colors.red,
                     fontSize: 12.0,
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                   ),
                 ),
                 SizedBox(
@@ -159,11 +181,11 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                   onTap: () {
                     if (guestName.isEmpty) {
                       setState(() {
-                        guestNameError = 'Must not be Empty';
+                        guestNameError = getTranslated(context, "notValidName")!;
                       });
                     } else if (desc.isEmpty) {
                       setState(() {
-                        descError = 'Must not be Empty';
+                        descError = getTranslated(context, "notValidDesc")!;
                       });
                     } else
                       createOneTimePermission();
@@ -184,6 +206,7 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
+                          fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                         ),
                       ),
                     ),
@@ -213,9 +236,9 @@ class _OneTimePermissionState extends State<OneTimePermission> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': '29',
-            'role': 'owner',
-            'language': '',
+            'userId': userId,
+            'role': role,
+            'language': _getCurrentLang(),
             'guest_name': guestName,
             'guest_ride': desc,
           },
@@ -277,5 +300,23 @@ class _OneTimePermissionState extends State<OneTimePermission> {
   Future<bool> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult != ConnectivityResult.none;
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 }

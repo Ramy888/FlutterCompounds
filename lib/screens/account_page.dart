@@ -117,11 +117,12 @@ class AccountPageState extends State<AccountPage>
                 renterMembers.addAll(invitationResponse.relatedData!.renter!);
                 familyMembers.addAll(invitationResponse.relatedData!.family!);
 
-                if(familyMembers.isNotEmpty && renterMembers.isNotEmpty){
+                if (familyMembers.isNotEmpty && renterMembers.isNotEmpty) {
                   tabsNumber = 2;
-                }else if(familyMembers.isNotEmpty || renterMembers.isNotEmpty) {
+                } else if (familyMembers.isNotEmpty ||
+                    renterMembers.isNotEmpty) {
                   tabsNumber = 1;
-                }else{
+                } else {
                   tabsNumber = 0;
                 }
 
@@ -184,16 +185,19 @@ class AccountPageState extends State<AccountPage>
 
       // Add a file to the request
       // Replace 'file' with the name of the field your API expects for the file
-      File file = File(photoPath);
-      String mimeType = lookupMimeType(file.path) ?? 'application/octet-stream';
-      http.MultipartFile filePart = await http.MultipartFile.fromPath(
-        'userPhoto', // field name for the file
-        file.path,
-        contentType: MediaType.parse(mimeType),
-      );
+      if (photoPath.isNotEmpty) {
+        File file = File(photoPath);
+        String mimeType =
+            lookupMimeType(file.path) ?? 'application/octet-stream';
+        http.MultipartFile filePart = await http.MultipartFile.fromPath(
+          'userPhoto', // field name for the file
+          file.path,
+          contentType: MediaType.parse(mimeType),
+        );
 
-      // Add the file part to the request
-      request.files.add(filePart);
+        // Add the file part to the request
+        request.files.add(filePart);
+      }
 
       try {
         final response = await request.send();
@@ -235,7 +239,7 @@ class AccountPageState extends State<AccountPage>
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'email': "email@email.com",
+            'email': email,
             'description': 'Delete my account',
             'language': _getCurrentLang(),
           },
@@ -321,8 +325,13 @@ class AccountPageState extends State<AccountPage>
                             iconSize: 30,
                             hint: Text(
                               getTranslated(context, 'change_language')!,
-                              style: const TextStyle(
-                                  color: Colors.black, fontSize: 14),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: _getCurrentLang() == "ar"
+                                    ? 'arFont'
+                                    : 'enBold',
+                              ),
                             ),
                             onChanged: (Language? language) {
                               if (language != null) {
@@ -388,13 +397,40 @@ class AccountPageState extends State<AccountPage>
                           child: Column(
                             children: [
                               const SizedBox(height: 10),
-                              Text(uName, style: TextStyle(fontSize: 17)),
+                              Text(uName,
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontFamily: _getCurrentLang() == "ar"
+                                        ? 'arFont'
+                                        : 'enBold',
+                                  )),
                               const SizedBox(height: 10),
-                              Text(phone),
+                              Text(
+                                phone,
+                                style: TextStyle(
+                                  fontFamily: _getCurrentLang() == "ar"
+                                      ? 'arFont'
+                                      : 'enBold',
+                                ),
+                              ),
                               const SizedBox(height: 10),
-                              Text(umail),
+                              Text(
+                                umail,
+                                style: TextStyle(
+                                  fontFamily: _getCurrentLang() == "ar"
+                                      ? 'arFont'
+                                      : 'enBold',
+                                ),
+                              ),
                               const SizedBox(height: 10),
-                              Text(uunit),
+                              Text(
+                                uunit,
+                                style: TextStyle(
+                                  fontFamily: _getCurrentLang() == "ar"
+                                      ? 'arFont'
+                                      : 'enBold',
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -405,7 +441,14 @@ class AccountPageState extends State<AccountPage>
                             onPressed: () {
                               _showBottomSheet(context);
                             },
-                            child: const Text('Edit Profile'),
+                            child: Text(
+                              getTranslated(context, "editProfile")!,
+                              style: TextStyle(
+                                fontFamily: _getCurrentLang() == "ar"
+                                    ? 'arFont'
+                                    : 'enBold',
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -414,32 +457,6 @@ class AccountPageState extends State<AccountPage>
                           replacement: SizedBox(height: 1),
                           child: Column(
                             children: [
-                              // Visibility(
-                              //   visible: familyMembers.isNotEmpty,
-                              //   child: Tab(
-                              //     text: 'Family',
-                              //   ),
-                              // ),
-                              // Visibility(
-                              //   visible: renterMembers.isNotEmpty,
-                              //   child: Tab(
-                              //     text: 'Tenant',
-                              //   ),
-                              // ),
-                              // SizedBox(
-                              //   child: Text(
-                              //     'Related Members:',
-                              //     style: TextStyle(
-                              //       // Make text underlined
-                              //       decoration: TextDecoration.underline,
-                              //       fontSize: 13.0,
-                              //       color: Colors.blue,
-                              //     ),
-                              //   ),
-                              // ),
-                              // SizedBox(
-                              //   height: 20,
-                              // ),
                               DefaultTabController(
                                 length: 2,
                                 child: Column(
@@ -448,9 +465,14 @@ class AccountPageState extends State<AccountPage>
                                       controller: _tabController,
                                       tabs: [
                                         if (familyMembers.isNotEmpty)
-                                          Tab(text: 'Family'),
+                                          Tab(
+                                            text: getTranslated(
+                                                context, "family")!,
+                                          ),
                                         if (renterMembers.isNotEmpty)
-                                          Tab(text: 'Tenant'),
+                                          Tab(
+                                              text: getTranslated(
+                                                  context, "tenant")!),
                                       ],
                                     ),
                                     SizedBox(
@@ -608,6 +630,8 @@ class AccountPageState extends State<AccountPage>
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
+                        fontFamily:
+                            _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                       ),
                     ),
                     Text(
@@ -617,6 +641,8 @@ class AccountPageState extends State<AccountPage>
                       style: TextStyle(
                         fontSize: 13.0,
                         color: Colors.black,
+                        fontFamily:
+                            _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -634,6 +660,8 @@ class AccountPageState extends State<AccountPage>
                         style: TextStyle(
                           fontSize: 13.0,
                           color: Colors.white,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                         ),
                       ),
                     ),
@@ -661,7 +689,10 @@ class AccountPageState extends State<AccountPage>
               children: [
                 ListTile(
                   leading: Icon(Icons.vpn_key),
-                  title: Text('Change Password'),
+                  title: Text(getTranslated(context, "changePass")!,
+                      style: TextStyle(
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold')),
                   onTap: () {
                     // Handle option 1
                     Navigator.pop(context);
@@ -670,7 +701,10 @@ class AccountPageState extends State<AccountPage>
                 ),
                 ListTile(
                   leading: Icon(Icons.logout),
-                  title: Text('Logout'),
+                  title: Text(getTranslated(context, "logout")!,
+                      style: TextStyle(
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold')),
                   onTap: () {
                     // Handle option 2
                     Navigator.pop(context);
@@ -679,7 +713,10 @@ class AccountPageState extends State<AccountPage>
                 ),
                 ListTile(
                   leading: Icon(Icons.delete),
-                  title: Text('Delete Account'),
+                  title: Text(getTranslated(context, "delAccount")!,
+                      style: TextStyle(
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold')),
                   onTap: () {
                     // Handle option 2
                     Navigator.pop(context);
@@ -743,16 +780,24 @@ class AccountPageState extends State<AccountPage>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Permission Required'),
-          content: const Text(
-              'To add your photo, it is required to grant permission to access Photos.'),
+          title: Text(getTranslated(context, "permissionRequired")!,
+              style: TextStyle(
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+              )),
+          content: Text(getTranslated(context, "whyPermission")!,
+              style: TextStyle(
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+              )),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
                 requestPermissions(); // Request permission again
               },
-              child: const Text('OK'),
+              child: Text(getTranslated(context, "ok")!,
+                  style: TextStyle(
+                    fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+                  )),
             ),
           ],
         );
@@ -787,7 +832,7 @@ class AccountPageState extends State<AccountPage>
       changeUserPhoto();
     } else {
       // Handle the case where the user did not select a photo
-      showToast("No photo selected");
+      showToast(getTranslated(context, "noPhotoSelected")!);
       setState(() {
         hideGalleryPhoto = true;
       });
@@ -832,8 +877,15 @@ class AccountPageState extends State<AccountPage>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to logout?'),
+          title: Text(getTranslated(context, "logout")!,
+              style: TextStyle(
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+              )),
+          content: Text(getTranslated(context, "sureLogout")!,
+          style: TextStyle(
+            fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+          )
+          ),
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
@@ -845,7 +897,10 @@ class AccountPageState extends State<AccountPage>
               onPressed: () {
                 _logout();
               },
-              child: Text('Logout'),
+              child: Text(getTranslated(context, "logout")!,
+                  style: TextStyle(
+                    fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+                  )),
             ),
           ]),
     );
@@ -855,20 +910,34 @@ class AccountPageState extends State<AccountPage>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-          title: Text('Delete Account'),
-          content: Text('Are you sure you want to Delete?'),
+          title: Text(getTranslated(context, "delAccount")!,
+              style: TextStyle(
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+              )),
+          content: Text(getTranslated(context, "sureDelete")!,
+          style: TextStyle(
+            fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+          )
+          ),
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('Cancel'),
+              child: Text(getTranslated(context, "cancel")!,
+                  style: TextStyle(
+                    fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+                  )),
             ),
             TextButton(
               onPressed: () {
                 deleteAccount();
               },
-              child: Text('Delete'),
+              child: Text(getTranslated(context, "del")!,
+              style: TextStyle(
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+              )
+              ),
             ),
           ]),
     );
@@ -882,8 +951,9 @@ class AccountPageState extends State<AccountPage>
     Navigator.of(context).pop();
     // Navigator.of(context).pushNamedAndRemoveUntil(
     //     LoginPage.routeName, (Route<dynamic> route) => false);
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage(title: "Login"),));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (BuildContext context) => LoginPage(title: getTranslated(context, "login")!),
+    ));
   }
 
   Future<void> getUserDataFromPreferences() async {

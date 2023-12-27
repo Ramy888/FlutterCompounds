@@ -8,7 +8,9 @@ import 'package:connectivity/connectivity.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Models/User.dart';
 import '../../Models/family_renter_model.dart';
 import '../../widgets/Loading_dialog.dart';
 
@@ -32,6 +34,11 @@ class _FamilyRenterState extends State<FamilyRenter> {
   String fromError = "";
   String dateTo = "";
   String toError = "";
+  String userId = "";
+  String email = "";
+  String role = "";
+  bool isLogged = false;
+
 
   TextEditingController fromDateController = TextEditingController();
   TextEditingController toDateController = TextEditingController();
@@ -91,7 +98,15 @@ class _FamilyRenterState extends State<FamilyRenter> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('New ' + capitalizeFirstLetter(widget.type) + ' Invitation'),
+            Text('New ' + capitalizeFirstLetter(widget.type) + ' Invitation',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontFamily: _getCurrentLang() == "ar"
+                      ? 'arFont'
+                      : 'enBold',
+                ),
+            ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -116,12 +131,20 @@ class _FamilyRenterState extends State<FamilyRenter> {
                   ),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Guest Name',
-                      hintText: 'Enter Guest Name',
+                      labelText: getTranslated(context, "guestName"),
+                      hintText: getTranslated(context, "enterGuestName"),
                       labelStyle:
-                          const TextStyle(color: Colors.black, fontSize: 14.0),
+                           TextStyle(color: Colors.black, fontSize: 14.0,
+                             fontFamily: _getCurrentLang() == "ar"
+                                ? 'arFont'
+                                : 'enBold',
+                           ),
                       hintStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 13.0),
+                          TextStyle(color: Colors.grey, fontSize: 13.0,
+                            fontFamily: _getCurrentLang() == "ar"
+                                ? 'arFont'
+                                : 'enBold',
+                          ),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
                             const BorderSide(color: Colors.black, width: 1.0),
@@ -139,7 +162,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
                         // Input field to show error
                         setState(() {
                           guestNameError =
-                              'Must not be Empty'; // Customize the error message
+                              getTranslated(context, "notValidName")!; // Customize the error message
                         });
                       } else {
                         setState(() {
@@ -152,9 +175,12 @@ class _FamilyRenterState extends State<FamilyRenter> {
                 ),
                 Text(
                   guestNameError,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     color: Colors.red,
                     fontSize: 12.0,
+                    fontFamily: _getCurrentLang() == "ar"
+                        ? 'arFont'
+                        : 'enBold',
                   ),
                 ),
                 SizedBox(
@@ -167,14 +193,21 @@ class _FamilyRenterState extends State<FamilyRenter> {
                   ),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Description',
-                      hintText: 'Add Description',
-                      labelStyle: const TextStyle(
+                      labelText: getTranslated(context, "desc"),
+                      hintText: getTranslated(context, "enterDesc"),
+                      labelStyle:  TextStyle(
                         color: Colors.black,
                         fontSize: 14.0,
+                        fontFamily: _getCurrentLang() == "ar"
+                            ? 'arFont'
+                            : 'enBold',
                       ),
                       hintStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 13.0),
+                           TextStyle(color: Colors.grey, fontSize: 13.0,
+                             fontFamily: _getCurrentLang() == "ar"
+                                ? 'arFont'
+                                : 'enBold',
+                           ),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
                             const BorderSide(color: Colors.black, width: 1.0),
@@ -193,7 +226,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
                         // Input field to show error
                         setState(() {
                           descError =
-                              'Must not be Empty'; // Customize the error message
+                              getTranslated(context, "notValidDesc")!; // Customize the error message
                         });
                       } else {
                         setState(() {
@@ -206,9 +239,12 @@ class _FamilyRenterState extends State<FamilyRenter> {
                 ),
                 Text(
                   descError,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     color: Colors.red,
                     fontSize: 12.0,
+                    fontFamily: _getCurrentLang() == "ar"
+                        ? 'arFont'
+                        : 'enBold',
                   ),
                 ),
                 Visibility(
@@ -236,9 +272,13 @@ class _FamilyRenterState extends State<FamilyRenter> {
                             child: TextFormField(
                               controller: fromDateController,
                               decoration: InputDecoration(
-                                labelText: 'Visit From',
-                                hintText: 'Select Date From',
-                                hintStyle: TextStyle(color: Colors.black),
+                                labelText: getTranslated(context, "visitFrom"),
+                                hintText: getTranslated(context, "enterDateFrom"),
+                                hintStyle: TextStyle(color: Colors.black,
+                                fontFamily: _getCurrentLang() == "ar"
+                                    ? 'arFont'
+                                    : 'enBold',
+                                ),
                                 // labelStyle: TextStyle(color: Colors.black),
                               ),
                               enabled: false,
@@ -247,7 +287,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
                                   // Input field to show error
                                   setState(() {
                                     fromError =
-                                        'Must not be Empty'; // Customize the error message
+                                        getTranslated(context, "notValidDate")!; // Customize the error message
                                   });
                                 } else {
                                   setState(() {
@@ -261,9 +301,12 @@ class _FamilyRenterState extends State<FamilyRenter> {
                         ),
                         Text(
                           fromError,
-                          style: const TextStyle(
+                          style:  TextStyle(
                             color: Colors.red,
                             fontSize: 12.0,
+                            fontFamily: _getCurrentLang() == "ar"
+                                ? 'arFont'
+                                : 'enBold',
                           ),
                         ),
                         SizedBox(
@@ -287,8 +330,8 @@ class _FamilyRenterState extends State<FamilyRenter> {
                             child: TextFormField(
                               controller: toDateController,
                               decoration: InputDecoration(
-                                labelText: 'Visit To',
-                                hintText: 'Select Date To',
+                                labelText: getTranslated(context, "visitTo"),
+                                hintText: getTranslated(context, "enterDateTo"),
                               ),
                               enabled: false,
                               onChanged: (value) {
@@ -297,7 +340,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
                                   // Input field to show error
                                   setState(() {
                                     toError =
-                                        'Must not be Empty'; // Customize the error message
+                                        getTranslated(context, "notValidDate")!; // Customize the error message
                                   });
                                 } else {
                                   setState(() {
@@ -311,9 +354,12 @@ class _FamilyRenterState extends State<FamilyRenter> {
                         ),
                         Text(
                           toError,
-                          style: const TextStyle(
+                          style:  TextStyle(
                             color: Colors.red,
                             fontSize: 12.0,
+                            fontFamily: _getCurrentLang() == "ar"
+                                ? 'arFont'
+                                : 'enBold',
                           ),
                         ),
                       ],
@@ -329,23 +375,23 @@ class _FamilyRenterState extends State<FamilyRenter> {
                   onTap: () {
                     if (guestName.isEmpty) {
                       setState(() {
-                        guestNameError = 'Must not be Empty';
+                        guestNameError = getTranslated(context, "notValidName")!;
                       });
                     } else if (desc.isEmpty) {
                       setState(() {
-                        descError = 'Must not be Empty';
+                        descError = getTranslated(context, "notValidDesc")!;
                       });
                     } else {
                       //creating renter invitation
                       if (widget.type != "family") {
                         if (dateFrom.isEmpty) {
                           setState(() {
-                            fromError = 'Must not be Empty';
+                            fromError = getTranslated(context, "notValidDate")!;
                           });
 
                         } else if (dateTo.isEmpty) {
                           setState(() {
-                            toError = 'Must not be Empty';
+                            toError = getTranslated(context, "notValidDate")!;
                           });
 
                         }else
@@ -371,6 +417,9 @@ class _FamilyRenterState extends State<FamilyRenter> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
+                          fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
                         ),
                       ),
                     ),
@@ -385,6 +434,8 @@ class _FamilyRenterState extends State<FamilyRenter> {
   }
 
   Future<void> createFamilyPermission() async {
+    getUserDataFromPreferences();
+
     bool isConnected = await checkInternetConnection();
     if (isConnected) {
       String getUnitsUrl =
@@ -400,9 +451,9 @@ class _FamilyRenterState extends State<FamilyRenter> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': '29',
-            'role': 'owner',
-            'language': '',
+            'userId': userId,
+            'role': role,
+            'language': _getCurrentLang(),
             'rent_from': dateFrom,
             'rent_to': dateTo,
             'invitaion_type': widget.type,
@@ -462,6 +513,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
     );
   }
 
+
   Future<bool> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult != ConnectivityResult.none;
@@ -473,6 +525,24 @@ class _FamilyRenterState extends State<FamilyRenter> {
     }
 
     return input[0].toUpperCase() + input.substring(1);
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 
   @override

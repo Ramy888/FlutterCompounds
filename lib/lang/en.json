@@ -65,13 +65,36 @@
     "permissionRequired" : "Permission Required",
     "next" : "Next",
     "cancel" : "Cancel",
-
     "selectProject": "Please select project",
     "selectUnit": "Please select unit",
     "projectName" : "Project Name",
     "selectAProject" : "Select a Project",
     "unit" : "Unit",
     "selectAUnit" : "Select a Unit",
-    "searchUnit": "Search Unit"
+    "searchUnit": "Search Unit",
+
+    "guestName" : "Guest Name",
+    "enterGuestName" : "Enter Guest Name",
+    "notValidName" : "Not Valid Name",
+    "desc" : "Description",
+    "enterDesc" : "Enter Description",
+    "notValidDesc" : "Not Valid Description",
+    "visitFrom" : "Visit From",
+    "visitTo" : "Visit To",
+    "enterDateFrom" : "Enter Date From",
+    "notValidDate": "Not Valid Date",
+    "enterDateTo" : "Enter Date To",
+    "newGatePerm" : "New Gate Permission",
+    "newOneTimePass" : "New One Time Permission",
+    "editProfile" : "Edit Profile",
+    "family" : "Family",
+    "tenant" : "Tenant",
+    "changePass" : "Change Password",
+    "logout" : "Logout",
+    "delAccount" : "Delete Account",
+    "sureLogout" : "Are you sure you want to logout?",
+    "sureDelete" : "Are you sure you want to delete your account?",
+    "del": "Delete"
+
 
 }

@@ -7,9 +7,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:chewie/chewie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../Models/ImagesSlider.dart';
+import '../../Models/User.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({super.key, required this.title, required this.isBackHome});
@@ -25,6 +27,10 @@ class DetailPage extends StatefulWidget {
 class DetailPageState extends State<DetailPage> {
   String TAG = "DetailPage";
   bool isGettingData = false;
+  String userId = "";
+  String email = "";
+  String role = "";
+  bool isLogged = false;
 
   final List<OneImage> adsList = [];
 
@@ -32,8 +38,9 @@ class DetailPageState extends State<DetailPage> {
 
   final List<OneImage> mediaList = [];
 
-
   Future<void> getAdsNewsMedia() async {
+    getUserDataFromPreferences();
+
     String adsNewsUrl =
         "https://sourcezone2.com/public/00.AccessControl/get_home_page.php";
 
@@ -51,9 +58,9 @@ class DetailPageState extends State<DetailPage> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': "29",
-            'role': "owner",
-            'language': "en",
+            'userId': userId,
+            'role': role,
+            'language': _getCurrentLang(),
           },
         );
 
@@ -70,7 +77,6 @@ class DetailPageState extends State<DetailPage> {
             adsList.clear();
             newsList.clear();
             mediaList.clear();
-
 
             for (int i = 0; i < imgs.adsList.length; i++) {
               if (imgs.adsList[i].itemType == "ads") {
@@ -172,28 +178,34 @@ class DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back_ios_sharp),
-          ),
-          title: Text(widget.title,),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios_sharp),
         ),
-        body: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            // Add background image here
-            image: DecorationImage(
-              image: AssetImage('assets/splash/white_bg.png'),
-              // Replace with your image asset
-              fit: BoxFit.cover,
-            ),
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            fontSize: 20.0,
+            fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
           ),
-          child: buildListViewByType(),
         ),
+      ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          // Add background image here
+          image: DecorationImage(
+            image: AssetImage('assets/splash/white_bg.png'),
+            // Replace with your image asset
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: buildListViewByType(),
+      ),
     );
   }
 
@@ -287,6 +299,9 @@ class DetailPageState extends State<DetailPage> {
                                           // Make font bold
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
+                                          fontFamily: _getCurrentLang() == 'ar'
+                                              ? 'arFont'
+                                              : 'enBold',
                                         ),
                                       ),
                                       Text(
@@ -297,6 +312,9 @@ class DetailPageState extends State<DetailPage> {
                                         style: TextStyle(
                                           fontSize: 13.0,
                                           color: Colors.black,
+                                          fontFamily: _getCurrentLang() == 'ar'
+                                              ? 'arFont'
+                                              : 'enBold',
                                         ),
                                       ),
                                     ],
@@ -339,12 +357,10 @@ class DetailPageState extends State<DetailPage> {
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(15.0),
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
                           child: ClipRRect(
-                            borderRadius:
-                            BorderRadius.circular(15.0),
+                            borderRadius: BorderRadius.circular(15.0),
                             child: Container(
                               height: MediaQuery.of(context).size.width * 0.6,
                               width: MediaQuery.of(context).size.width,
@@ -355,20 +371,16 @@ class DetailPageState extends State<DetailPage> {
                                 colorBlendMode: BlendMode.darken,
                                 adsList[index].itemPhotoUrl,
                                 fit: BoxFit.fill,
-                                loadingBuilder:
-                                    (BuildContext context,
+                                loadingBuilder: (BuildContext context,
                                     Widget child,
-                                    ImageChunkEvent?
-                                    loadingProgress) {
+                                    ImageChunkEvent? loadingProgress) {
                                   if (loadingProgress == null) {
                                     return child;
                                   } else {
                                     return Center(
-                                      child:
-                                      CircularProgressIndicator(
+                                      child: CircularProgressIndicator(
                                         valueColor:
-                                        AlwaysStoppedAnimation<
-                                            Color>(
+                                            AlwaysStoppedAnimation<Color>(
                                           Colors.black,
                                         ),
                                         strokeWidth: 2.0,
@@ -377,8 +389,7 @@ class DetailPageState extends State<DetailPage> {
                                   }
                                 },
                                 errorBuilder: (BuildContext context,
-                                    Object error,
-                                    StackTrace? stackTrace) {
+                                    Object error, StackTrace? stackTrace) {
                                   return Image.asset(
                                     'assets/images/skycitylogo.png',
                                     fit: BoxFit.fill,
@@ -483,12 +494,18 @@ class DetailPageState extends State<DetailPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0,
+                    fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
                   ),
                 ),
                 SizedBox(
                   height: 5,
                 ),
-                Text(newsDescription),
+                Text(newsDescription,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      fontFamily:
+                          _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+                    )),
                 SizedBox(
                   height: 20,
                 ),
@@ -562,6 +579,24 @@ class DetailPageState extends State<DetailPage> {
     );
   }
 
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+
   @override
   void initState() {
     getAdsNewsMedia();
@@ -570,7 +605,6 @@ class DetailPageState extends State<DetailPage> {
 
   @override
   void dispose() {
-
     super.dispose();
   }
 }
