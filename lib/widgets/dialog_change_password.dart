@@ -4,13 +4,12 @@ import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Models/User.dart';
 import '../Models/basic_model.dart';
 import 'Loading_dialog.dart';
 import 'dart:developer' as dev;
-
-
-
 
 class PasswordDialog extends StatefulWidget {
   @override
@@ -26,9 +25,14 @@ class _PasswordDialogState extends State<PasswordDialog> {
   String confirmPassword = "";
   String passError = "";
   String confirmPassError = "";
-
+  String userId = "";
+  String email = "";
+  String role = "";
+  bool isLogged = false;
 
   Future<void> changeUserPassword(String pass) async {
+    getUserDataFromPreferences();
+
     bool isConnected = await checkInternetConnection();
     if (isConnected) {
       String url =
@@ -44,8 +48,8 @@ class _PasswordDialogState extends State<PasswordDialog> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': '29',
-            'role': 'owner',
+            'userId': userId,
+            'role': role,
             'language': _getCurrentLang(),
             'password': pass,
           },
@@ -57,13 +61,10 @@ class _PasswordDialogState extends State<PasswordDialog> {
               jsonDecode(response.body) as Map<String, dynamic>);
 
           if (passResponse.status == "OK") {
-
             showToast(passResponse.info);
             LoadingDialog.hide(context);
             Navigator.of(context).pop();
-
           } else {
-
             dev.log(TAG, error: "changePassword API status Error: $response");
             showToast(passResponse.info);
             LoadingDialog.hide(context);
@@ -86,7 +87,14 @@ class _PasswordDialogState extends State<PasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Change Password'),
+      title: Text(
+        getTranslated(context, "changePass")!,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 16.0,
+          fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+        ),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -95,13 +103,15 @@ class _PasswordDialogState extends State<PasswordDialog> {
               controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter New Password',
-                labelStyle: const TextStyle(
+                labelText: getTranslated(context, "password"),
+                hintText: getTranslated(context, "enterNewPassword"),
+                labelStyle:  TextStyle(
                   color: Colors.black,
                   fontSize: 14.0,
+                  fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
                 ),
-                hintStyle: const TextStyle(color: Colors.grey, fontSize: 13.0),
+                hintStyle:  TextStyle(color: Colors.grey, fontSize: 13.0,
+                  fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.black, width: 1.0),
                   borderRadius: BorderRadius.circular(25.0),
@@ -117,7 +127,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
                   // Input field to show error
                   setState(() {
                     passError =
-                    'Must not be Empty'; // Customize the error message
+                        getTranslated(context, "passwordNotValid")!; // Customize the error message
                   });
                 } else {
                   setState(() {
@@ -129,9 +139,10 @@ class _PasswordDialogState extends State<PasswordDialog> {
             ),
             Text(
               passError,
-              style: const TextStyle(
+              style:  TextStyle(
                 color: Colors.red,
                 fontSize: 12.0,
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
               ),
             ),
             SizedBox(height: 16),
@@ -139,13 +150,15 @@ class _PasswordDialogState extends State<PasswordDialog> {
               controller: confirmPasswordController,
               obscureText: true,
               decoration: InputDecoration(
-                labelText: 'Confirm Password',
-                hintText: 'Enter Password again',
-                labelStyle: const TextStyle(
+                labelText: getTranslated(context, "confirmPassword"),
+                hintText: getTranslated(context, "enterConfirmPassword")!,
+                labelStyle:  TextStyle(
                   color: Colors.black,
                   fontSize: 14.0,
+                  fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
                 ),
-                hintStyle: const TextStyle(color: Colors.grey, fontSize: 13.0),
+                hintStyle:  TextStyle(color: Colors.grey, fontSize: 13.0,
+                  fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.black, width: 1.0),
                   borderRadius: BorderRadius.circular(25.0),
@@ -161,7 +174,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
                   // Input field to show error
                   setState(() {
                     confirmPassError =
-                    'Must not be Empty'; // Customize the error message
+                        getTranslated(context, "notValidConfirmPassword")!; // Customize the error message
                   });
                 } else {
                   setState(() {
@@ -173,9 +186,10 @@ class _PasswordDialogState extends State<PasswordDialog> {
             ),
             Text(
               confirmPassError,
-              style: const TextStyle(
+              style:  TextStyle(
                 color: Colors.red,
                 fontSize: 12.0,
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
               ),
             ),
           ],
@@ -188,19 +202,19 @@ class _PasswordDialogState extends State<PasswordDialog> {
             String password = passwordController.text;
             String confirmPassword = confirmPasswordController.text;
 
-            if(password.isEmpty){
+            if (password.isEmpty) {
               setState(() {
-                passError = "Password is empty";
+                passError = getTranslated(context, "passwordNotValid")!;
               });
             } else if (confirmPassword.isEmpty) {
               setState(() {
-                confirmPassError = "Confirm Password is empty";
+                confirmPassError = getTranslated(context, "passwordNotValid")!;
               });
-            } else if(password != confirmPassword){
+            } else if (password != confirmPassword) {
               setState(() {
-                confirmPassError = "Password and Confirm Password must be same";
+                confirmPassError = getTranslated(context, "notValidConfirmPassword")!;
               });
-            }else{
+            } else {
               changeUserPassword(password);
             }
           },
@@ -220,6 +234,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
+                  fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
                 ),
               ),
             ),
@@ -253,5 +268,19 @@ class _PasswordDialogState extends State<PasswordDialog> {
 
   String _getCurrentLang() {
     return Localizations.localeOf(context).languageCode;
+  }
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 }
