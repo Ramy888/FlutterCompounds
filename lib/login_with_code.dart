@@ -338,7 +338,7 @@ class LoginWithCodePageState extends State<LoginWithCodePage> {
       var _compressedImage = await ImageHelper.compress(image: image);
       final _sizeInKbAfter = _compressedImage.lengthSync() / 1024;
       print('After Compress $_sizeInKbAfter kb');
-      var _croppedImage = await ImageHelper.cropImage(_compressedImage);
+      var _croppedImage = await ImageHelper.cropImage(_compressedImage, context);
       if (_croppedImage == null) {
         return;
       }

@@ -190,7 +190,7 @@ Future<void> _prepareForNotification() async {
   dev.log("theToken??:: ", error: fcmToken);
 
   //If subscribe based on topic then use this
-  await messaging.subscribeToTopic('flutter_notification');
+  await messaging.subscribeToTopic('news');
 
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

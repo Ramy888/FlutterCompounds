@@ -15,7 +15,9 @@ import 'package:pyramids_developments/widgets/FillableOutlinedButton.dart';
 import 'package:share/share.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Models/User.dart';
 import '../Models/invitaion.dart';
 import '../Models/invitation_update.dart';
 import '../widgets/Loading_dialog.dart';
@@ -36,6 +38,10 @@ class InvitationsPageState extends State<InvitaionsPage> {
   bool isGettingInvites = false;
   bool updatingPermission = false;
   late List<bool> buttonStates;
+  String userId = "";
+  String email = "";
+  String role = "";
+  bool isLogged = false;
 
   List<OneInvitation> invitationsList = [];
 
@@ -57,10 +63,10 @@ class InvitationsPageState extends State<InvitaionsPage> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': '29',
+            'userId': userId,
             'type': type,
-            'role': 'owner',
-            'language': ''
+            'role': role,
+            'language': _getCurrentLang()
           },
         );
 
@@ -131,11 +137,11 @@ class InvitationsPageState extends State<InvitaionsPage> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': '29',
-            'role': 'owner',
+            'userId': userId,
+            'role': role,
             'permissionId': oneInvitation.invitationId,
             'new_status': state,
-            'language': ''
+            'language': _getCurrentLang()
           },
         );
 
@@ -175,7 +181,6 @@ class InvitationsPageState extends State<InvitaionsPage> {
       showToast(getTranslated(context, "noInternetConnection")!);
     }
   }
-
 
   Future<void> _refreshData() async {
     // Implement your refresh logic here
@@ -231,8 +236,11 @@ class InvitationsPageState extends State<InvitaionsPage> {
                 _showBottomSheet(context);
               },
               label: Text(
-                'Add New',
-                style: TextStyle(color: Colors.white),
+                getTranslated(context, "addNew")!,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                ),
               ),
               icon: Icon(Icons.add_business_rounded, color: Colors.white),
               backgroundColor: Colors.purple,
@@ -258,7 +266,7 @@ class InvitationsPageState extends State<InvitaionsPage> {
                 child: Row(
                   children: [
                     FillableOutlinedButton(
-                      text: 'Gate',
+                      text: getTranslated(context, "gate")!,
                       isActive: buttonStates[0],
                       onPressed: () async {
                         _updateButtonState(0);
@@ -268,7 +276,7 @@ class InvitationsPageState extends State<InvitaionsPage> {
                       width: 5,
                     ),
                     FillableOutlinedButton(
-                      text: 'One Time',
+                      text: getTranslated(context, "oneTime")!,
                       isActive: buttonStates[1],
                       onPressed: () {
                         _updateButtonState(1);
@@ -278,7 +286,7 @@ class InvitationsPageState extends State<InvitaionsPage> {
                       width: 5,
                     ),
                     FillableOutlinedButton(
-                      text: 'Family',
+                      text: getTranslated(context, "family")!,
                       isActive: buttonStates[2],
                       onPressed: () {
                         _updateButtonState(2);
@@ -288,7 +296,7 @@ class InvitationsPageState extends State<InvitaionsPage> {
                       width: 5,
                     ),
                     FillableOutlinedButton(
-                      text: 'Tenant',
+                      text: getTranslated(context, "tenant")!,
                       isActive: buttonStates[3],
                       onPressed: () {
                         _updateButtonState(3);
@@ -314,9 +322,14 @@ class InvitationsPageState extends State<InvitaionsPage> {
                         child: invitationsList.length == 0
                             ? Center(
                                 child: Text(
-                                "No Invitations added yet",
+                                getTranslated(context, "noInvitations")!,
                                 style: TextStyle(
-                                    fontSize: 20, color: Colors.black),
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  fontFamily: _getCurrentLang() == "ar"
+                                      ? 'arFont'
+                                      : 'enBold',
+                                ),
                               ))
                             : ListView.builder(
                                 itemCount: invitationsList.length,
@@ -338,7 +351,8 @@ class InvitationsPageState extends State<InvitaionsPage> {
                                             _showShareOptions(context,
                                                 invitationsList[index]);
                                           } else
-                                            showToast("Invitation is expired");
+                                            showToast(getTranslated(context,
+                                                "invitationsExpired")!);
                                         }
                                       },
                                       child: Card(
@@ -368,10 +382,15 @@ class InvitationsPageState extends State<InvitaionsPage> {
                                                           invitationsList[index]
                                                               .guestName!,
                                                           style: TextStyle(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontFamily:
+                                                                _getCurrentLang() ==
+                                                                        "ar"
+                                                                    ? 'arFont'
+                                                                    : 'enBold',
+                                                          )),
                                                     )
                                                   : Text(
                                                       capitalizeFirstLetter(
@@ -379,6 +398,11 @@ class InvitationsPageState extends State<InvitaionsPage> {
                                                               .invitationType),
                                                       style: TextStyle(
                                                           fontSize: 14,
+                                                          fontFamily:
+                                                              _getCurrentLang() ==
+                                                                      "ar"
+                                                                  ? 'arFont'
+                                                                  : 'enBold',
                                                           fontWeight:
                                                               FontWeight.bold)),
                                               Center(
@@ -392,14 +416,26 @@ class InvitationsPageState extends State<InvitaionsPage> {
                                                         invitationsList[index]
                                                             .description!,
                                                         style: TextStyle(
-                                                            fontSize: 12),
+                                                          fontSize: 12,
+                                                          fontFamily:
+                                                              _getCurrentLang() ==
+                                                                      "ar"
+                                                                  ? 'arFont'
+                                                                  : 'enBold',
+                                                        ),
                                                       )
                                                     : Text(
                                                         invitationsList[index]
                                                                 .guest_ride ??
                                                             '',
                                                         style: TextStyle(
-                                                            fontSize: 12),
+                                                          fontSize: 12,
+                                                          fontFamily:
+                                                              _getCurrentLang() ==
+                                                                      "ar"
+                                                                  ? 'arFont'
+                                                                  : 'enBold',
+                                                        ),
                                                       ),
                                               ),
                                               SizedBox(
@@ -423,6 +459,10 @@ class InvitationsPageState extends State<InvitaionsPage> {
                                               style: TextStyle(
                                                 fontSize: 13.0,
                                                 color: Colors.white,
+                                                fontFamily:
+                                                    _getCurrentLang() == "ar"
+                                                        ? 'arFont'
+                                                        : 'enBold',
                                               ),
                                             ),
                                           ),
@@ -477,7 +517,13 @@ class InvitationsPageState extends State<InvitaionsPage> {
               children: [
                 ListTile(
                   leading: Icon(Icons.door_back_door),
-                  title: Text('Gate'),
+                  title: Text(getTranslated(context, "gate")!,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                          color: Colors.black)),
                   onTap: () async {
                     final newItem = await Navigator.popAndPushNamed(
                         context, GatePermission.routeName);
@@ -490,7 +536,13 @@ class InvitationsPageState extends State<InvitaionsPage> {
                 ),
                 ListTile(
                   leading: Icon(Icons.qr_code_2_outlined),
-                  title: Text('One Time'),
+                  title: Text(getTranslated(context, "oneTime")!,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                          color: Colors.black)),
                   onTap: () async {
                     final newItem = await Navigator.popAndPushNamed(
                         context, OneTimePermission.routeName);
@@ -503,16 +555,22 @@ class InvitationsPageState extends State<InvitaionsPage> {
                 ),
                 ListTile(
                   leading: Icon(Icons.family_restroom_rounded),
-                  title: Text('Family'),
+                  title: Text(getTranslated(context, "family")!,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                          color: Colors.black)),
                   onTap: () async {
                     Navigator.pop(context);
                     final newItem = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                      builder: (context) => FamilyRenter(
-                        type: 'family',
-                      ),
-                    ));
+                          builder: (context) => FamilyRenter(
+                            type: getTranslated(context, "family")!,
+                          ),
+                        ));
                     if (newItem == true) {
                       setState(() {
                         _updateButtonState(2);
@@ -522,14 +580,20 @@ class InvitationsPageState extends State<InvitaionsPage> {
                 ),
                 ListTile(
                   leading: Icon(Icons.emoji_people),
-                  title: Text('Tenant'),
-                  onTap: () async{
+                  title: Text(getTranslated(context, "tenant")!,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                          color: Colors.black)),
+                  onTap: () async {
                     Navigator.pop(context);
                     final newItem = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => FamilyRenter(
-                            type: 'renter',
+                            type: getTranslated(context, "tenant")!,
                           ),
                         ));
                     if (newItem == true) {
@@ -560,7 +624,14 @@ class InvitationsPageState extends State<InvitaionsPage> {
               ListTile(
                 leading: Icon(Icons.share),
                 title: Container(
-                    margin: EdgeInsets.only(left: 15), child: Text('Share')),
+                    margin: EdgeInsets.only(left: 15),
+                    child: Text(
+                      getTranslated(context, "share")!,
+                      style: TextStyle(
+                        fontFamily:
+                            _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                      ),
+                    )),
                 onTap: () async {
                   // Handle sharing text or base64 image
                   if (invitation.invitationType == 'oneTimePass') {
@@ -592,14 +663,14 @@ class InvitationsPageState extends State<InvitaionsPage> {
 
   void _showSheetActivateDeactivate(
       BuildContext context, OneInvitation invitation) {
-    String buttonText = "Activate";
+    String buttonText = getTranslated(context, "activate")!;
     IconData icon = Icons.lock_open_rounded;
 
     if (invitation.invitationStatus == 'active') {
-      buttonText = "Deactivate";
+      buttonText = getTranslated(context, "deactivate")!;
       icon = Icons.lock_outline_rounded;
     } else {
-      buttonText = "Activate";
+      buttonText = getTranslated(context, "activate")!;
       icon = Icons.lock_open_rounded;
     }
 
@@ -644,6 +715,24 @@ class InvitationsPageState extends State<InvitaionsPage> {
     }
 
     return input[0].toUpperCase() + input.substring(1);
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 
   @override

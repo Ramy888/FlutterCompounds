@@ -316,6 +316,7 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
+                    fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
                   ),
                 ),
               ),
@@ -344,7 +345,7 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
                   ),
                   onPressed: details.onStepContinue,
                   child: Center(
-                    child: Text('Next',
+                    child: Text(getTranslated(context, "next")!,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -355,7 +356,7 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
                 ),
                 TextButton(
                   onPressed: details.onStepCancel,
-                  child: Text('Cancel',
+                  child: Text(getTranslated(context, "cancel")!,
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,

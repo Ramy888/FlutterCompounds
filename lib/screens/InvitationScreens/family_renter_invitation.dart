@@ -98,7 +98,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('New ' + capitalizeFirstLetter(widget.type) + ' Invitation',
+            Text(getTranslated(context, "new")! + ' ' + capitalizeFirstLetter(widget.type) + ' ' + getTranslated(context, "invitation")!,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 16,
@@ -248,7 +248,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
                   ),
                 ),
                 Visibility(
-                  visible: widget.type != "family",
+                  visible: widget.type != getTranslated(context, "family"),
                   // Set visibility based on the condition
                   child: Padding(
                     padding: EdgeInsets.only(left: 5, right: 5),
@@ -383,7 +383,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
                       });
                     } else {
                       //creating renter invitation
-                      if (widget.type != "family") {
+                      if (widget.type != getTranslated(context, "family")) {
                         if (dateFrom.isEmpty) {
                           setState(() {
                             fromError = getTranslated(context, "notValidDate")!;
@@ -443,6 +443,8 @@ class _FamilyRenterState extends State<FamilyRenter> {
 
       LoadingDialog.show(context);
 
+      String type = widget.type == getTranslated(context, "family") ? "family" : "renter";
+
       try {
         final response = await http.post(
           Uri.parse(getUnitsUrl),
@@ -456,7 +458,7 @@ class _FamilyRenterState extends State<FamilyRenter> {
             'language': _getCurrentLang(),
             'rent_from': dateFrom,
             'rent_to': dateTo,
-            'invitaion_type': widget.type,
+            'invitaion_type': type,
           },
         );
 

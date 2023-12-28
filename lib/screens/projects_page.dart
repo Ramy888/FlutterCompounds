@@ -1,4 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:pyramids_developments/localization/language_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Models/User.dart';
 
 //projects page
 class Projects extends StatefulWidget {
@@ -27,14 +33,34 @@ class _ProjectsState extends State<Projects> {
         ),
         child: Center(
           child: Text(
-            "Projects coming soon",
+            getTranslated(context, "projectsSoon")!,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.normal,
+              fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
             ),
           ),
         ),
       ),
     );
   }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+
+
+  // Future<void> getUserDataFromPreferences() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final userString = prefs.getString('user_data');
+  //   if (userString != null) {
+  //     final userJson = jsonDecode(userString);
+  //     userId = User.fromMap(userJson).userId;
+  //     if (userId.isNotEmpty) {
+  //       isLogged = prefs.getBool("isLogin")!;
+  //       email = User.fromMap(userJson).email;
+  //       role = User.fromMap(userJson).role;
+  //     }
+  //   }
+  // }
 }

@@ -37,10 +37,15 @@ class _FillableOutlinedButtonState extends State<FillableOutlinedButton> {
           style: TextStyle(
             color: widget.isActive ? Colors.white : Colors.purple,
             fontWeight: FontWeight.bold,
+            fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
           ),
         ),
       ),
     );
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
   }
 }
 

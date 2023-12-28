@@ -210,7 +210,7 @@ class DetailPageState extends State<DetailPage> {
   }
 
   Widget buildListViewByType() {
-    if (widget.title == "News") {
+    if (widget.title == getTranslated(context, "news")) {
       return isGettingData
           ? Align(
               alignment: Alignment.center,

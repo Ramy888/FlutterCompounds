@@ -1,7 +1,9 @@
 import 'package:connectivity/connectivity.dart%20%20';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Models/User.dart';
 import '../Models/notification_model.dart';
 import '../localization/language_constants.dart';
 import '../widgets/Loading_dialog.dart';
@@ -20,9 +22,16 @@ class Notifications extends StatefulWidget {
 class _NotificationsState extends State<Notifications> {
   String TAG = "Notifications";
   bool isGettingData = false;
+  bool isLogged = false;
+  String userId = "";
+  String email = "";
+  String role = "";
+
   List<OneNotification> notificationList = [];
 
   Future<void> getNotifications() async {
+    getUserDataFromPreferences();
+
     String adsNewsUrl =
         "https://sourcezone2.com/public/00.AccessControl/get_notifications.php";
 
@@ -40,9 +49,9 @@ class _NotificationsState extends State<Notifications> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': "29",
-            'role': "owner",
-            'language': "en",
+            'userId': userId,
+            'role': role,
+            'language': _getCurrentLang(),
           },
         );
 
@@ -200,6 +209,7 @@ class _NotificationsState extends State<Notifications> {
                                             // Make font bold
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
+                                            fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                                           ),
                                         ),
                                         Text(
@@ -210,6 +220,7 @@ class _NotificationsState extends State<Notifications> {
                                           style: TextStyle(
                                             fontSize: 13.0,
                                             color: Colors.black,
+                                            fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                                           ),
                                         ),
                                       ],
@@ -293,12 +304,20 @@ class _NotificationsState extends State<Notifications> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15.0,
+                      fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                     ),
                   ),
                   SizedBox(
                     height: 5,
                   ),
-                  Text(body),
+                  Text(body,
+                      style: TextStyle(
+                        fontSize: 13.0,
+                        fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                      )
+                      // overflow: TextOverflow.ellipsis,
+                      // maxLines: 2,
+                      ),
                   SizedBox(
                     height: 20,
                   ),
@@ -341,6 +360,21 @@ class _NotificationsState extends State<Notifications> {
 
   String _getCurrentLang() {
     return Localizations.localeOf(context).languageCode;
+  }
+
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 
   @override

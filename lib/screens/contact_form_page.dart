@@ -2,7 +2,9 @@ import 'package:connectivity/connectivity.dart%20%20';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pyramids_developments/Models/basic_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Models/User.dart';
 import '../localization/language_constants.dart';
 import '../widgets/Loading_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +29,10 @@ class _ContactFormPageState extends State<ContactFormPage> {
   String emailError = "";
   String phoneError = "";
   String messageError = "";
+  String userId = "";
+  String role = "";
+  bool isLogged = false;
+
 
   @override
   void dispose() {
@@ -49,8 +55,8 @@ class _ContactFormPageState extends State<ContactFormPage> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': '29',
-            'role': 'owner',
+            'userId': userId,
+            'role': role,
             'language': _getCurrentLang(),
             'name': name,
             'phoneNumber': phone,
@@ -71,8 +77,21 @@ class _ContactFormPageState extends State<ContactFormPage> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text(getTranslated(context, "success")!),
-                    content: Text(gateResponse.info),
+                    title: Text(getTranslated(context, "success")!,
+                        style:  TextStyle(
+                            color: Colors.green,
+                            fontSize: 14,
+                            fontFamily: _getCurrentLang() == "ar"
+                                ? 'arFont'
+                                : 'enBold',
+                            fontWeight: FontWeight.bold)),
+                    content: Text(gateResponse.info, style:  TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontFamily: _getCurrentLang() == "ar"
+                            ? 'arFont'
+                            : 'enBold',
+                        fontWeight: FontWeight.bold)),
                     actions: [
                       TextButton(
                         onPressed: () {
@@ -80,13 +99,18 @@ class _ContactFormPageState extends State<ContactFormPage> {
                           Navigator.of(context).pop();
 
                           setState(() {
-                            name = "";
-                            email = "";
-                            phone = "";
                             message = "";
                           });
                         },
-                        child: Text(getTranslated(context, "ok")!),
+                        child: Text(getTranslated(context, "ok")!,
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 14,
+                            fontFamily: _getCurrentLang() == "ar"
+                                ? 'arFont'
+                                : 'enBold',
+                            fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   );
@@ -147,14 +171,19 @@ class _ContactFormPageState extends State<ContactFormPage> {
                     ),
                     child: TextFormField(
                       decoration: InputDecoration(
-                        labelText: 'Full Name',
-                        hintText: 'Add Full Name',
-                        labelStyle: const TextStyle(
+                        labelText: getTranslated(context, "fullName"),
+                        hintText: getTranslated(context, "enterFullName"),
+                        labelStyle:  TextStyle(
                           color: Colors.black,
                           fontSize: 14.0,
+                          fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
                         ),
                         hintStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 13.0),
+                             TextStyle(color: Colors.grey, fontSize: 13.0, fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',),
                         focusedBorder: OutlineInputBorder(
                           borderSide:
                               const BorderSide(color: Colors.black, width: 1.0),
@@ -172,7 +201,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                           // Input field to show error
                           setState(() {
                             nameError =
-                                'Must not be Empty'; // Customize the error message
+                                getTranslated(context, "notValidName")!; // Customize the error message
                           });
                         } else {
                           setState(() {
@@ -185,9 +214,12 @@ class _ContactFormPageState extends State<ContactFormPage> {
                   ),
                   Text(
                     nameError,
-                    style: const TextStyle(
+                    style:  TextStyle(
                       color: Colors.red,
                       fontSize: 12.0,
+                      fontFamily: _getCurrentLang() == "ar"
+                          ? 'arFont'
+                          : 'enBold',
                     ),
                   ),
                   SizedBox(height: 5),
@@ -199,14 +231,21 @@ class _ContactFormPageState extends State<ContactFormPage> {
                     ),
                     child: TextFormField(
                       decoration: InputDecoration(
-                        labelText: 'Email',
-                        hintText: 'Add Email',
-                        labelStyle: const TextStyle(
+                        labelText: getTranslated(context, "email"),
+                        hintText: getTranslated(context, "enterEmail"),
+                        labelStyle:  TextStyle(
                           color: Colors.black,
                           fontSize: 14.0,
+                          fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
                         ),
                         hintStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 13.0),
+                             TextStyle(color: Colors.grey, fontSize: 13.0,
+                             fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
+                             ),
                         focusedBorder: OutlineInputBorder(
                           borderSide:
                               const BorderSide(color: Colors.black, width: 1.0),
@@ -224,7 +263,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                           // Input field to show error
                           setState(() {
                             emailError =
-                                'Must not be Empty'; // Customize the error message
+                                getTranslated(context, "notValidEmail")!; // Customize the error message
                           });
                         } else {
                           setState(() {
@@ -237,9 +276,12 @@ class _ContactFormPageState extends State<ContactFormPage> {
                   ),
                   Text(
                     emailError,
-                    style: const TextStyle(
+                    style:  TextStyle(
                       color: Colors.red,
                       fontSize: 12.0,
+                      fontFamily: _getCurrentLang() == "ar"
+                          ? 'arFont'
+                          : 'enBold',
                     ),
                   ),
                   SizedBox(height: 5),
@@ -251,14 +293,21 @@ class _ContactFormPageState extends State<ContactFormPage> {
                     ),
                     child: TextFormField(
                       decoration: InputDecoration(
-                        labelText: 'Phone',
-                        hintText: 'Add Phone Number',
-                        labelStyle: const TextStyle(
+                        labelText: getTranslated(context, "phoneNumber"),
+                        hintText: getTranslated(context, "enterPhoneNumber"),
+                        labelStyle:  TextStyle(
                           color: Colors.black,
                           fontSize: 14.0,
+                          fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
                         ),
                         hintStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 13.0),
+                             TextStyle(color: Colors.grey, fontSize: 13.0,
+                             fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
+                             ),
                         focusedBorder: OutlineInputBorder(
                           borderSide:
                               const BorderSide(color: Colors.black, width: 1.0),
@@ -276,7 +325,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                           // Input field to show error
                           setState(() {
                             phoneError =
-                                'Must not be Empty'; // Customize the error message
+                                getTranslated(context, "notValidPhoneNumber")!; // Customize the error message
                           });
                         } else {
                           setState(() {
@@ -289,9 +338,12 @@ class _ContactFormPageState extends State<ContactFormPage> {
                   ),
                   Text(
                     phoneError,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.red,
                       fontSize: 12.0,
+                      fontFamily: _getCurrentLang() == "ar"
+                          ? 'arFont'
+                          : 'enBold',
                     ),
                   ),
                   SizedBox(height: 5),
@@ -302,14 +354,21 @@ class _ContactFormPageState extends State<ContactFormPage> {
                     ),
                     child: TextFormField(
                       decoration: InputDecoration(
-                        labelText: 'Message',
-                        hintText: 'Add Message',
-                        labelStyle: const TextStyle(
+                        labelText: getTranslated(context, "message"),
+                        hintText: getTranslated(context, "enterMessage"),
+                        labelStyle:  TextStyle(
                           color: Colors.black,
                           fontSize: 14.0,
+                          fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
                         ),
                         hintStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 13.0),
+                             TextStyle(color: Colors.grey, fontSize: 13.0,
+                             fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
+                             ),
                         focusedBorder: OutlineInputBorder(
                           borderSide:
                               const BorderSide(color: Colors.black, width: 1.0),
@@ -328,7 +387,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                           // Input field to show error
                           setState(() {
                             messageError =
-                                'Must not be Empty'; // Customize the error message
+                                getTranslated(context, "notValidMessage")!; // Customize the error message
                           });
                         } else {
                           setState(() {
@@ -341,9 +400,12 @@ class _ContactFormPageState extends State<ContactFormPage> {
                   ),
                   Text(
                     messageError,
-                    style: const TextStyle(
+                    style:  TextStyle(
                       color: Colors.red,
                       fontSize: 12.0,
+                      fontFamily: _getCurrentLang() == "ar"
+                          ? 'arFont'
+                          : 'enBold',
                     ),
                   ),
                   SizedBox(height: 16),
@@ -351,19 +413,19 @@ class _ContactFormPageState extends State<ContactFormPage> {
                     onTap: () {
                       if (name.isEmpty) {
                         setState(() {
-                          nameError = 'Must not be Empty';
+                          nameError = getTranslated(context, "notValidName")!;
                         });
                       } else if (email.isEmpty) {
                         setState(() {
-                          emailError = 'Must not be Empty';
+                          emailError = getTranslated(context, "notValidEmail")!;
                         });
                       } else if (phone.isEmpty) {
                         setState(() {
-                          phoneError = 'Must not be Empty';
+                          phoneError = getTranslated(context, "notValidPhoneNumber")!;
                         });
                       } else if (message.isEmpty) {
                         setState(() {
-                          messageError = 'Must not be Empty';
+                          messageError = getTranslated(context, "notValidMessage")!;
                         });
                       } else
                         sendContactFormRequest();
@@ -384,6 +446,9 @@ class _ContactFormPageState extends State<ContactFormPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
+                            fontFamily: _getCurrentLang() == "ar"
+                                ? 'arFont'
+                                : 'enBold',
                           ),
                         ),
                       ),
@@ -514,5 +579,19 @@ class _ContactFormPageState extends State<ContactFormPage> {
 
   String _getCurrentLang() {
     return Localizations.localeOf(context).languageCode;
+  }
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 }

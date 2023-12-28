@@ -7,6 +7,9 @@ import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Models/User.dart';
 
 class QrCodePage extends StatefulWidget {
   const QrCodePage({super.key, required this.title});
@@ -24,8 +27,14 @@ class QrCodePageState extends State<QrCodePage> {
   String qrCode = "";
   String userName = "";
   String userUnit = "";
+  String userId = "";
+  String email = "";
+  String role = "";
+  bool isLogged = false;
 
   Future<void> getQrCodeForUser() async {
+    getUserDataFromPreferences();
+
     bool isConnected = await checkInternetConnection();
     if (isConnected) {
       String getUnitsUrl =
@@ -43,8 +52,8 @@ class QrCodePageState extends State<QrCodePage> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': "29",
-            'role': "owner",
+            'userId': userId,
+            'role': role,
           },
         );
 
@@ -173,12 +182,20 @@ class QrCodePageState extends State<QrCodePage> {
                               style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.bold,
+                                fontFamily: _getCurrentLang() == "ar"
+                                    ? 'arFont'
+                                    : 'enBold',
                               ),
                             ),
                             SizedBox(width: 80),
                             Text(
                               userUnit,
-                              style: TextStyle(fontSize: 15),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontFamily: _getCurrentLang() == "ar"
+                                    ? 'arFont'
+                                    : 'enBold',
+                              ),
                             ),
                           ],
                         ),
@@ -186,7 +203,16 @@ class QrCodePageState extends State<QrCodePage> {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 20),
                           child: qrCode.isEmpty
-                              ? Center(child: Text("No QrCode", style: TextStyle(fontSize: 17),))
+                              ? Center(
+                                  child: Text(
+                                  getTranslated(context, "noQrCode")!,
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontFamily: _getCurrentLang() == "ar"
+                                        ? 'arFont'
+                                        : 'enBold',
+                                  ),
+                                ))
                               : Center(
                                   child: Image.memory(
                                     base64Decode(qrCode),
@@ -202,6 +228,24 @@ class QrCodePageState extends State<QrCodePage> {
               ),
       ),
     );
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 
   @override

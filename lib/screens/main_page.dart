@@ -12,6 +12,7 @@ import 'package:pyramids_developments/screens/notifications.dart';
 import 'package:pyramids_developments/screens/projects_page.dart';
 import 'package:pyramids_developments/screens/qrcode_page.dart';
 import '../Models/User.dart';
+import '../localization/language_constants.dart';
 import '../widgets/bottom_bar_icon.dart';
 import '../widgets/navigation_bar_icons.dart';
 import 'account_page.dart';
@@ -170,6 +171,7 @@ class MainPageState extends State<MainPage> {
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                       ),
                     ),
                   ],
@@ -178,28 +180,41 @@ class MainPageState extends State<MainPage> {
             ),
             ListTile(
               leading: Icon(Icons.home),
-              title: Text('Home'),
+              title: Text(
+                  getTranslated(context, 'home')!,
+                  style: TextStyle(
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                  )),
               onTap: () {
                 _onDrawerItemTap(0);
               },
             ),
             ListTile(
               leading: Icon(Icons.qr_code_2_outlined),
-              title: Text('Access'),
+              title: Text(getTranslated(context, "accessCode")!,
+                  style: TextStyle(
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                  )),
               onTap: () {
                 _onDrawerItemTap(4);
               },
             ),
             ListTile(
               leading: Icon(Icons.insert_invitation),
-              title: Text('Invitations'),
+              title: Text(getTranslated(context, "invitations")!,
+                  style: TextStyle(
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                  )),
               onTap: () {
                 _onDrawerItemTap(5);
               },
             ),
             ListTile(
               leading: Icon(Icons.account_circle),
-              title: Text('Account'),
+              title: Text(getTranslated(context, "account")!,
+                  style: TextStyle(
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                  )),
               onTap: () {
                 _onDrawerItemTap(6);
               },
@@ -393,43 +408,5 @@ class MainPageState extends State<MainPage> {
       //     builder: (context) => ProductPage(message: data['message'])));
       Navigator.pushNamed(context, AccountPage.routeName);
     }
-  }
-}
-
-class YourDrawerWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text(
-              'Drawer Header',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
-          ),
-          ListTile(
-            title: Text('Item 1'),
-            onTap: () {
-              // Handle drawer item tap
-            },
-          ),
-          ListTile(
-            title: Text('Item 2'),
-            onTap: () {
-              // Handle drawer item tap
-            },
-          ),
-          // Add more ListTile widgets as needed
-        ],
-      ),
-    );
   }
 }

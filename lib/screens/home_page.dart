@@ -9,10 +9,12 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:chewie/chewie.dart';
 import 'package:pyramids_developments/screens/HomeDetailScreens/detail_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 
 import '../Models/ImagesSlider.dart';
+import '../Models/User.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,6 +31,11 @@ class HomePageState extends State<HomePage> {
   String TAG = "HomePage";
   int _currentIndex = 0;
   bool isGettingPhotos = false;
+  String userId = "";
+  String email = "";
+  String role = "";
+  bool isLogged = false;
+
 
   // late VideoPlayerController _videoPlayerController;
   // late ChewieController _chewieController;
@@ -58,9 +65,9 @@ class HomePageState extends State<HomePage> {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: <String, String>{
-            'userId': "29",
-            'role': "owner",
-            'language': "en",
+            'userId': userId,
+            'role': role,
+            'language': _getCurrentLang(),
           },
         );
 
@@ -196,31 +203,6 @@ class HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.all(5.0),
                       child: Wrap(
                         children: [
-                          // Container(
-                          //   alignment: Alignment.centerLeft,
-                          //   margin: EdgeInsets.symmetric(
-                          //       vertical: 0.0, horizontal: 5.0),
-                          //   child: TextButton(
-                          //     onPressed: () {
-                          //       Navigator.push(
-                          //           context,
-                          //           MaterialPageRoute(
-                          //               builder: (context) => DetailPage(
-                          //                   title: "Announcements",
-                          //                   isBackHome: false)));
-                          //     },
-                          //     child: Text(
-                          //       'See More',
-                          //       style: TextStyle(
-                          //         // Make text underlined
-                          //         decoration: TextDecoration.underline,
-                          //         fontSize: 15.0,
-                          //         fontStyle: FontStyle.italic,
-                          //         color: Colors.white,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                           SizedBox(
                             height: 10,
                           ),
@@ -338,12 +320,15 @@ class HomePageState extends State<HomePage> {
                               Container(
                                 margin: EdgeInsets.only(left: 10.0),
                                 child: Text(
-                                  'News',
+                                  getTranslated(context, "news")!,
                                   style: TextStyle(
                                     // Make text underlined
                                     fontSize: 15.0,
                                     fontStyle: FontStyle.normal,
                                     color: Colors.white,
+                                    fontFamily: _getCurrentLang() == "ar"
+                                        ? 'arFont'
+                                        : 'enBold',
                                   ),
                                 ),
                               ),
@@ -353,17 +338,20 @@ class HomePageState extends State<HomePage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => DetailPage(
-                                              title: "News",
+                                              title: getTranslated(context, "news")!,
                                               isBackHome: false)));
                                 },
                                 child: Text(
-                                  'Show More',
+                                  getTranslated(context, "more")!,
                                   style: TextStyle(
                                     // Make text underlined
                                     decoration: TextDecoration.underline,
                                     fontSize: 15.0,
                                     fontStyle: FontStyle.italic,
                                     color: Colors.white,
+                                    fontFamily: _getCurrentLang() == "ar"
+                                        ? 'arFont'
+                                        : 'enBold',
                                   ),
                                 ),
                               ),
@@ -448,6 +436,10 @@ class HomePageState extends State<HomePage> {
                                                 // Make font bold
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black,
+                                                fontFamily: _getCurrentLang() ==
+                                                        "ar"
+                                                    ? 'arFont'
+                                                    : 'enBold',
                                               ),
                                             ),
                                             Text(
@@ -458,6 +450,10 @@ class HomePageState extends State<HomePage> {
                                               style: TextStyle(
                                                 fontSize: 13.0,
                                                 color: Colors.black,
+                                                fontFamily: _getCurrentLang() ==
+                                                        "ar"
+                                                    ? 'arFont'
+                                                    : 'enBold',
                                               ),
                                             ),
                                           ],
@@ -478,12 +474,15 @@ class HomePageState extends State<HomePage> {
                     Container(
                       margin: EdgeInsets.only(left: 10.0),
                       child: Text(
-                        'Media',
+                        getTranslated(context, "media")!,
                         style: TextStyle(
                           // Make text underlined
                           fontSize: 15.0,
                           fontStyle: FontStyle.normal,
                           color: Colors.white,
+                          fontFamily: _getCurrentLang() == "ar"
+                              ? 'arFont'
+                              : 'enBold',
                         ),
                       ),
                     ),
@@ -566,12 +565,19 @@ class HomePageState extends State<HomePage> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0,
+                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                   ),
                 ),
                 SizedBox(
                   height: 5,
                 ),
-                Text(newsDescription),
+                Text(newsDescription,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      fontFamily:
+                          _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                    )
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -643,6 +649,24 @@ class HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+
+  Future<void> getUserDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString('user_data');
+    if (userString != null) {
+      final userJson = jsonDecode(userString);
+      userId = User.fromMap(userJson).userId;
+      if (userId.isNotEmpty) {
+        isLogged = prefs.getBool("isLogin")!;
+        email = User.fromMap(userJson).email;
+        role = User.fromMap(userJson).role;
+      }
+    }
   }
 
   @override
