@@ -15,7 +15,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   Widget build(BuildContext context) {
     return Row(
       children: List.generate(
-        4,
+        5,
             (index) => NavBarItem(
           index: index,
           isSelected: widget.selectedIndex == index,

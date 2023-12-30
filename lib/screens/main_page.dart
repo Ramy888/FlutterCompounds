@@ -51,6 +51,7 @@ class MainPageState extends State<MainPage> {
     Notifications(), //1
     ContactFormPage(), //2
     Projects(), //3
+
     QrCodePage(title: "My Access Code"), //4
     InvitaionsPage(title: "My Invitations"), //5
     AccountPage(title: "My Account"), //6

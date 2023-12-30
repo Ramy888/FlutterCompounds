@@ -120,6 +120,11 @@
     "invitations" : "Invitations",
     "account" : "Account",
     "projectsSoon" : "Projects coming soon",
-    "noQrCode" : "No QR Code"
+    "noQrCode" : "No QR Code",
+
+    "pending"  : "Pending",
+    "resolved" : "Resolved",
+    "noRequests" : "No Requests",
+    "newRequest" : "New Request",
 
 }
