@@ -11,6 +11,7 @@ import 'package:pyramids_developments/screens/invitations.dart';
 import 'package:pyramids_developments/screens/notifications.dart';
 import 'package:pyramids_developments/screens/projects_page.dart';
 import 'package:pyramids_developments/screens/qrcode_page.dart';
+import 'package:pyramids_developments/screens/support.dart';
 import '../Models/User.dart';
 import '../localization/language_constants.dart';
 import '../widgets/bottom_bar_icon.dart';
@@ -51,10 +52,10 @@ class MainPageState extends State<MainPage> {
     Notifications(), //1
     ContactFormPage(), //2
     Projects(), //3
-
-    QrCodePage(title: "My Access Code"), //4
-    InvitaionsPage(title: "My Invitations"), //5
-    AccountPage(title: "My Account"), //6
+    Support(title: "Support"), //4
+    QrCodePage(title: "My Access Code"), //5
+    InvitaionsPage(title: "My Invitations"), //6
+    AccountPage(title: "My Account"), //7
   ];
 
   Future<void> getUserStateFromPreferences() async {
@@ -197,7 +198,7 @@ class MainPageState extends State<MainPage> {
                     fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                   )),
               onTap: () {
-                _onDrawerItemTap(4);
+                _onDrawerItemTap(5);
               },
             ),
             ListTile(
@@ -207,7 +208,7 @@ class MainPageState extends State<MainPage> {
                     fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                   )),
               onTap: () {
-                _onDrawerItemTap(5);
+                _onDrawerItemTap(6);
               },
             ),
             ListTile(
@@ -217,7 +218,7 @@ class MainPageState extends State<MainPage> {
                     fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                   )),
               onTap: () {
-                _onDrawerItemTap(6);
+                _onDrawerItemTap(7);
               },
             ),
           ],

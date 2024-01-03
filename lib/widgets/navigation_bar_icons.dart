@@ -87,7 +87,7 @@ class _NavBarItemState extends State<NavBarItem> with SingleTickerProviderStateM
       child: Transform.scale(
         scale: _animation.value,
         child: Container(
-          width: MediaQuery.of(context).size.width / 4,
+          width: MediaQuery.of(context).size.width / 5,
           child: Image.asset(
             'assets/bottomBar/icon${widget.index + 1}.png',
             width: 50,

@@ -131,6 +131,7 @@ flutter:
      - assets/bottomBar/icon_home_active.png
      - assets/bottomBar/icon2.png
      - assets/bottomBar/icon4.png
+     - assets/bottomBar/icon5.png
      - assets/images/app_bar_en.jpg
      - assets/socialIcons/instagram.png
      - assets/socialIcons/map.png

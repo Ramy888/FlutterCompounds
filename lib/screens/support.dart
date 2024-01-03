@@ -3,13 +3,16 @@ import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:pyramids_developments/screens/ServiceDetails/request_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Models/User.dart';
+import '../Models/model_service.dart';
 import '../widgets/FillableOutlinedButton.dart';
+import '../widgets/ripple_effect.dart';
 
 class Support extends StatefulWidget {
   const Support({super.key, required this.title});
@@ -28,9 +31,62 @@ class SupportState extends State<Support> {
   String role = "";
   bool isLogged = false;
   bool isLoading = false;
-  late List<bool> buttonStates;
-  String _selectedButton = 'Tenant';
-  List servicesList = [];
+  List<bool> buttonStates = [true, false];
+  String _selectedButton = 'pending';
+
+  TextEditingController searchController = TextEditingController();
+  List filteredServicesList = [];
+
+  List servicesList = [
+    {
+      "serviceId": "1",
+      "serviceTitle": "Service Title",
+      "serviceDescription": "Service Description",
+      "serviceDateTime": "Service Date Time",
+      "serviceStatus": "Service Status",
+      "servicePrice": "Service Price",
+    },
+    {
+      "serviceId": "2",
+      "serviceTitle": "Service Title",
+      "serviceDescription": "Service Description",
+      "serviceDateTime": "Service Date Time",
+      "serviceStatus": "Service Status",
+      "servicePrice": "Service Price",
+    },
+    {
+      "serviceId": "3",
+      "serviceTitle": "Service Title",
+      "serviceDescription": "Service Description",
+      "serviceDateTime": "Service Date Time",
+      "serviceStatus": "Service Status",
+      "servicePrice": "Service Price",
+    },
+    {
+      "serviceId": "4",
+      "serviceTitle": "Service Title",
+      "serviceDescription": "Service Description",
+      "serviceDateTime": "Service Date Time",
+      "serviceStatus": "Service Status",
+      "servicePrice": "Service Price",
+    },
+    {
+      "serviceId": "5",
+      "serviceTitle": "Service Title",
+      "serviceDescription": "Service Description",
+      "serviceDateTime": "Service Date Time",
+      "serviceStatus": "Service Status",
+      "servicePrice": "Service Price",
+    },
+    {
+      "serviceId": "6",
+      "serviceTitle": "Service Title",
+      "serviceDescription": "Service Description",
+      "serviceDateTime": "Service Date Time",
+      "serviceStatus": "Service Status",
+      "servicePrice": "Service Price",
+    },
+  ];
 
   Future<void> getServices(String selected) async {
     getUserDataFromPreferences();
@@ -54,6 +110,7 @@ class SupportState extends State<Support> {
           body: <String, String>{
             'userId': userId,
             'role': role,
+            'language': _getCurrentLang(),
           },
         );
 
@@ -62,33 +119,30 @@ class SupportState extends State<Support> {
             isLoading = false;
           });
 
-          dev.log(TAG, name: "getQrCode", error: response.body);
+          dev.log(TAG, name: "getServices:: ", error: response.body);
 
-          // QrCode qrcodeResponse = QrCode.fromJson(
-          //     jsonDecode(response.body) as Map<String, dynamic>);
+          Service services = Service.fromJson(
+              jsonDecode(response.body) as Map<String, dynamic>);
 
-          // if (qrcodeResponse.status == "OK") {
-          //   //show image from base64 string QrCode.qrCode
-          //   qrCode = qrcodeResponse.data.qrcode;
-          //   userName = qrcodeResponse.data.firstName +
-          //       " " +
-          //       qrcodeResponse.data.lastName;
-          //   userUnit = qrcodeResponse.data.unit;
-          // } else {
-          //   showToast(qrcodeResponse.info);
-          // }
+          if (services.status == "OK") {
+            setState(() {
+              // servicesList = services.services!;
+            });
+          } else {
+            showToast(services.info);
+          }
         } else {
-          dev.log(TAG, error: "API sent Error: $response");
-          // showToast(
-          //     QrCode.fromJson(jsonDecode(response.body) as Map<String, dynamic>)
-          //         .info);
+          dev.log(TAG, error: "getServices API status Error: $response");
+          showToast(Service.fromJson(
+                  jsonDecode(response.body) as Map<String, dynamic>)
+              .info);
 
           setState(() {
             isLoading = false;
           });
         }
       } catch (e) {
-        dev.log(TAG, error: "ExceptionError : $e");
+        dev.log(TAG, error: "getServices ExceptionError : $e");
         showToast(getTranslated(context, "somethingWrong")!);
         setState(() {
           isLoading = false;
@@ -115,9 +169,6 @@ class SupportState extends State<Support> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -136,30 +187,67 @@ class SupportState extends State<Support> {
               )
             : Column(
                 children: [
-                  SingleChildScrollView(
-                    child: Row(
-                      children: [
-                        FillableOutlinedButton(
-                          text: getTranslated(context, "pending")!,
-                          isActive: buttonStates[0],
-                          onPressed: () async {
-                            _updateButtonState(0);
-                          },
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        FillableOutlinedButton(
-                          text: getTranslated(context, "resolved")!,
-                          isActive: buttonStates[1],
-                          onPressed: () {
-                            _updateButtonState(1);
-                          },
-                        ),
-                      ],
+                  SizedBox(height: 20),
+                  Center(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          FillableOutlinedButton(
+                            text: getTranslated(context, "pending")!,
+                            isActive: buttonStates[0],
+                            onPressed: () async {
+                              _updateButtonState(0);
+                            },
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          FillableOutlinedButton(
+                            text: getTranslated(context, "resolved")!,
+                            isActive: buttonStates[1],
+                            onPressed: () {
+                              _updateButtonState(1);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  Flexible(
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: searchController,
+                          onChanged: (value) {
+                            filterServices(value);
+                          },
+                          decoration: InputDecoration(
+                            hintText: getTranslated(context, "search")!,
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                              fontFamily: _getCurrentLang() == "ar"
+                                  ? 'arFont'
+                                  : 'enBold',
+                            ),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.black,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
                     child: Container(
                       child: RefreshIndicator(
                         onRefresh: _refreshData,
@@ -178,9 +266,102 @@ class SupportState extends State<Support> {
                             : ListView.builder(
                                 itemCount: servicesList.length,
                                 itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(),
+                                  return RippleInkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, RequestDetails.routeName);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
+                                            offset: Offset(0,
+                                                3), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  servicesList[index]
+                                                      ["serviceTitle"],
+                                                  style: TextStyle(
+                                                    fontSize: 17,
+                                                    color: Colors.black,
+                                                    fontFamily:
+                                                        _getCurrentLang() ==
+                                                                "ar"
+                                                            ? 'arFont'
+                                                            : 'enBold',
+                                                  ),
+                                                ),
+                                                Text(
+                                                  servicesList[index]
+                                                      ["serviceDateTime"],
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black,
+                                                    fontFamily:
+                                                        _getCurrentLang() ==
+                                                                "ar"
+                                                            ? 'arFont'
+                                                            : 'enBold',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  servicesList[index]
+                                                      ["serviceDescription"],
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black,
+                                                    fontFamily:
+                                                        _getCurrentLang() ==
+                                                                "ar"
+                                                            ? 'arFont'
+                                                            : 'enBold',
+                                                  ),
+                                                ),
+                                                Text(
+                                                  servicesList[index]
+                                                      ["serviceStatus"],
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black,
+                                                    fontFamily:
+                                                        _getCurrentLang() ==
+                                                                "ar"
+                                                            ? 'arFont'
+                                                            : 'enBold',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   );
                                 },
                               ),
@@ -264,5 +445,32 @@ class SupportState extends State<Support> {
         role = User.fromMap(userJson).role;
       }
     }
+  }
+
+  void filterServices(String query) {
+    setState(() {
+      filteredServicesList = servicesList
+          .where((service) =>
+              service["serviceTitle"]
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              service["serviceDescription"]
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              service["serviceStatus"]
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              service["servicePrice"]
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  @override
+  void initState() {
+    getServices("pending");
+    filteredServicesList = servicesList;
+    super.initState();
   }
 }

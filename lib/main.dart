@@ -9,11 +9,13 @@ import 'package:pyramids_developments/reset_password.dart';
 import 'package:pyramids_developments/screens/InvitationScreens/family_renter_invitation.dart';
 import 'package:pyramids_developments/screens/InvitationScreens/gate_permission.dart';
 import 'package:pyramids_developments/screens/InvitationScreens/one_time_permission.dart';
+import 'package:pyramids_developments/screens/ServiceDetails/request_details.dart';
 import 'package:pyramids_developments/screens/account_page.dart';
 import 'package:pyramids_developments/screens/home_page.dart';
 import 'package:pyramids_developments/screens/invitations.dart';
 import 'package:pyramids_developments/screens/main_page.dart';
 import 'package:pyramids_developments/screens/qrcode_page.dart';
+import 'package:pyramids_developments/screens/support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Models/User.dart';
 import 'login_page.dart';
@@ -159,6 +161,10 @@ class _MyAppState extends State<MyApp> {
         //invitations page route
         InvitaionsPage.routeName: (context) =>
             const InvitaionsPage(title: "Invitations"),
+        //request page route
+        Support.routeName: (context) => const Support(title: "Request"),
+        //request details page route
+         RequestDetails.routeName: (context) => const RequestDetails(),
         //account page route
         AccountPage.routeName: (context) => const AccountPage(title: "Account"),
         //gate permission page route
@@ -270,10 +276,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   )),
         );
       } else
-        Navigator.of(context).pushReplacement(
-          // MaterialPageRoute(builder: (context) => MainPage(title: 'Pyramids Developments',)),
-          MaterialPageRoute(builder: (context) => LoginPage(title: "Login")),
-        );
+        Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+        // Navigator.of(context).pushReplacement(
+        //   // MaterialPageRoute(builder: (context) => MainPage(title: 'Pyramids Developments',)),
+        //   MaterialPageRoute(builder: (context) => LoginPage(title: "Login")),
+        // );
     });
 
     return Scaffold(
@@ -300,6 +307,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     initialization();
+    dev.log(TAG, name: "initState", error: "initState");
     super.initState();
   }
 
