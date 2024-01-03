@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:pyramids_developments/screens/ServiceDetails/new_request.dart';
 import 'package:pyramids_developments/screens/ServiceDetails/request_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
@@ -383,7 +384,7 @@ class SupportState extends State<Support> {
               ),
               elevation: 10,
               onPressed: () {
-                // _showBottomSheet(context);
+                Navigator.pushNamed(context, NewRequest.routeName);
               },
               label: Text(
                 getTranslated(context, "newRequest")!,

@@ -9,6 +9,7 @@ import 'package:pyramids_developments/reset_password.dart';
 import 'package:pyramids_developments/screens/InvitationScreens/family_renter_invitation.dart';
 import 'package:pyramids_developments/screens/InvitationScreens/gate_permission.dart';
 import 'package:pyramids_developments/screens/InvitationScreens/one_time_permission.dart';
+import 'package:pyramids_developments/screens/ServiceDetails/new_request.dart';
 import 'package:pyramids_developments/screens/ServiceDetails/request_details.dart';
 import 'package:pyramids_developments/screens/account_page.dart';
 import 'package:pyramids_developments/screens/home_page.dart';
@@ -165,6 +166,8 @@ class _MyAppState extends State<MyApp> {
         Support.routeName: (context) => const Support(title: "Request"),
         //request details page route
          RequestDetails.routeName: (context) => const RequestDetails(),
+        //new request page route
+         NewRequest.routeName: (context) => const NewRequest(),
         //account page route
         AccountPage.routeName: (context) => const AccountPage(title: "Account"),
         //gate permission page route

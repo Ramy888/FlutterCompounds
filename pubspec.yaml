@@ -50,7 +50,9 @@ dependencies:
   intl_translation: ^0.18.2
   flutter_native_splash: ^2.3.6
   carousel_slider: ^4.0.0
-  connectivity: ^3.0.6
+
+  connectivity_plus: ^5.0.2
+
   share: ^2.0.4
   chewie: ^1.7.1
   video_player: ^2.6.0
