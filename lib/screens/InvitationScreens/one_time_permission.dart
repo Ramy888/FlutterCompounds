@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pyramids_developments/Models/createOneTime.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/User.dart';
@@ -221,6 +219,8 @@ class _OneTimePermissionState extends State<OneTimePermission> {
   }
 
   Future<void> createOneTimePermission() async {
+    getUserDataFromPreferences();
+
     bool isConnected = await checkInternetConnection();
     if (isConnected) {
       String getUnitsUrl =

@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart%20%20';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,8 +10,6 @@ import 'package:pyramids_developments/widgets/ripple_effect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:developer' as dev;
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:pyramids_developments/language.dart';
 
@@ -107,6 +105,7 @@ class LoginPageState extends State<LoginPage> {
   }
 
   Future<void> saveUserInPreferences(User user) async {
+    dev.log(TAG, name: "saveUserInPreferences::// ", error: user.toString());
     final prefs = await SharedPreferences.getInstance();
     final userJson = user.toJson(); // Convert the User object to a JSON map
     final userString = jsonEncode(userJson); // Convert the JSON map to a string

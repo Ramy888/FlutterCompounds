@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pyramids_developments/screens/InvitationScreens/family_renter_invitation.dart';

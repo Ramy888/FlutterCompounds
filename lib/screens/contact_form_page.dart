@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart%20%20';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pyramids_developments/Models/basic_model.dart';

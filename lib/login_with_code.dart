@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart%20%20';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:pyramids_developments/Helpers/ImageHelper.dart';
 import 'package:pyramids_developments/Models/User.dart';

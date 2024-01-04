@@ -12,7 +12,7 @@ import 'package:pyramids_developments/Models/user_account_model.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:pyramids_developments/language.dart';
 import 'package:pyramids_developments/login_page.dart';
 import 'package:pyramids_developments/widgets/Loading_dialog.dart';

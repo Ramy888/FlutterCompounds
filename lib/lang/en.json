@@ -125,6 +125,10 @@
     "pending"  : "Pending",
     "resolved" : "Resolved",
     "noRequests" : "No Requests",
-    "newRequest" : "New Request"
+    "newRequest" : "New Request",
+    "date" : "Date",
+    "enterDate" : "Enter Date",
+    "typeMessage" : "Type your message...",
+    "noNews" : "All News are Caught Up"
 
 }

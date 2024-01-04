@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -14,13 +13,10 @@ import 'package:pyramids_developments/screens/qrcode_page.dart';
 import 'package:pyramids_developments/screens/support.dart';
 import '../Models/User.dart';
 import '../localization/language_constants.dart';
-import '../widgets/bottom_bar_icon.dart';
 import '../widgets/navigation_bar_icons.dart';
 import 'account_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/services.dart';
 import 'dart:developer' as dev;
 
 class MainPage extends StatefulWidget {
@@ -36,7 +32,7 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   String TAG = "HomePage";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _currentIndex = 0;
+  late int _currentIndex ;
   String currentPage = HomePage.routeName;
   String userPhoto = "";
   String userName = "";
@@ -47,16 +43,18 @@ class MainPageState extends State<MainPage> {
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
   String currentLang = "";
 
-  final List<Widget> _pages = [
-    HomePage(), //0
-    Notifications(), //1
-    ContactFormPage(), //2
-    Projects(), //3
-    Support(title: "Support"), //4
-    QrCodePage(title: "My Access Code"), //5
-    InvitaionsPage(title: "My Invitations"), //6
-    AccountPage(title: "My Account"), //7
-  ];
+  late List<Widget> _pages;
+
+  // final List<Widget> _pages = [
+  //   HomePage(), //0
+  //   Notifications(), //1
+  //   ContactFormPage(), //2
+  //   Projects(), //3
+  //   Support(title: "Support"), //4
+  //   QrCodePage(title: "My Access Code"), //5
+  //   InvitaionsPage(title: "My Invitations"), //6
+  //   AccountPage(title: "My Account"), //7
+  // ];
 
   Future<void> getUserStateFromPreferences() async {
     final prefs = await SharedPreferences.getInstance();
@@ -339,7 +337,20 @@ class MainPageState extends State<MainPage> {
   void initState() {
     dev.log('initState', name: TAG);
     // initialization();
+
     super.initState();
+
+    _currentIndex = 0;
+    _pages = [
+      HomePage(), //0
+      Notifications(), //1
+      ContactFormPage(), //2
+      Projects(), //3
+      Support(title: "Support"), //4
+      QrCodePage(title: "My Access Code"), //5
+      InvitaionsPage(title: "My Invitations"), //6
+      AccountPage(title: "My Account"), //7
+    ];
 
     setupInteractedMessage();
 

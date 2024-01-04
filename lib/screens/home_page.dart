@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:chewie/chewie.dart';
 import 'package:pyramids_developments/screens/HomeDetailScreens/detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,6 +48,8 @@ class HomePageState extends State<HomePage> {
   final List<OneImage> mediaList = [];
 
   Future<void> getAdsNews() async {
+    getUserDataFromPreferences();
+
     String adsNewsUrl =
         "https://sourcezone2.com/public/00.AccessControl/get_home_page.php";
 
@@ -357,7 +359,18 @@ class HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          Container(
+                          newsList.length == 0
+                              ? Center(
+                              child: Text(
+                                getTranslated(context, "noNews")!,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.grey,
+                                  fontFamily: _getCurrentLang() == "ar"
+                                      ? 'arFont'
+                                      : 'enBold',
+                                ),
+                              )): Container(
                             //News section
                             margin: EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 5.0),
