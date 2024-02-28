@@ -87,12 +87,15 @@ class _NavBarItemState extends State<NavBarItem> with SingleTickerProviderStateM
       child: Transform.scale(
         scale: _animation.value,
         child: Container(
+          margin: const EdgeInsets.only(bottom: 10),
           width: MediaQuery.of(context).size.width / 5,
           child: Image.asset(
             'assets/bottomBar/icon${widget.index + 1}.png',
-            width: 50,
-            height: 50,
-            color: widget.isSelected ? Colors.greenAccent : null,
+            width: 80,
+            height: 80,
+            color: widget.isSelected ? Colors.cyanAccent : null,
+            //set hex color code here
+            // color: widget.isSelected ? Color(0xFF005F6A) : null,
           ),
         ),
       ),

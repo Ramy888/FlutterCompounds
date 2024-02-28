@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:developer' as dev;
@@ -11,7 +10,6 @@ import 'package:chewie/chewie.dart';
 import 'package:pyramids_developments/screens/HomeDetailScreens/detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
-
 
 import '../Models/ImagesSlider.dart';
 import '../Models/User.dart';
@@ -35,7 +33,6 @@ class HomePageState extends State<HomePage> {
   String email = "";
   String role = "";
   bool isLogged = false;
-
 
   // late VideoPlayerController _videoPlayerController;
   // late ChewieController _chewieController;
@@ -105,7 +102,8 @@ class HomePageState extends State<HomePage> {
               if (imgs.mediaList[i].itemType == "media") {
                 mediaList.add(imgs.mediaList[i]);
                 dev.log(TAG,
-                    name: "getMedia:// ", error: imgs.mediaList[i].itemPhotoUrl);
+                    name: "getMedia:// ",
+                    error: imgs.mediaList[i].itemPhotoUrl);
               }
             }
 
@@ -177,20 +175,22 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        margin: EdgeInsets.only(top: 65),
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          // Add background image here
-          image: DecorationImage(
-            image: AssetImage('assets/images/home_bg.png'),
-            // Replace with your image asset
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   // Add background image here
+        //   image: DecorationImage(
+        //     image: AssetImage('assets/images/home_bg.png'),
+        //     // Replace with your image asset
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         child: isGettingPhotos
             ? Align(
                 alignment: Alignment.center,
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(Colors.blue.shade300),
                   strokeWidth: 4.0,
                 ),
               )
@@ -273,7 +273,7 @@ class HomePageState extends State<HomePage> {
                                                 Object error,
                                                 StackTrace? stackTrace) {
                                               return Image.asset(
-                                                'assets/images/skycitylogo.png',
+                                                'assets/splash/newLogo.png',
                                                 fit: BoxFit.fill,
                                                 height: 100.0,
                                               );
@@ -308,7 +308,7 @@ class HomePageState extends State<HomePage> {
                         );
                       }).toList(),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 10),
 
                     Padding(
                       padding: const EdgeInsets.all(0.0),
@@ -320,37 +320,13 @@ class HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                margin: EdgeInsets.only(left: 10.0),
+                                margin: EdgeInsets.only(left: 15.0),
                                 child: Text(
                                   getTranslated(context, "news")!,
                                   style: TextStyle(
-                                    // Make text underlined
                                     fontSize: 15.0,
                                     fontStyle: FontStyle.normal,
-                                    color: Colors.white,
-                                    fontFamily: _getCurrentLang() == "ar"
-                                        ? 'arFont'
-                                        : 'enBold',
-                                  ),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => DetailPage(
-                                              title: getTranslated(context, "news")!,
-                                              isBackHome: false)));
-                                },
-                                child: Text(
-                                  getTranslated(context, "more")!,
-                                  style: TextStyle(
-                                    // Make text underlined
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 15.0,
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.white,
+                                    color: Colors.blue.shade300,
                                     fontFamily: _getCurrentLang() == "ar"
                                         ? 'arFont'
                                         : 'enBold',
@@ -361,148 +337,126 @@ class HomePageState extends State<HomePage> {
                           ),
                           newsList.length == 0
                               ? Center(
-                              child: Text(
-                                getTranslated(context, "noNews")!,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.grey,
-                                  fontFamily: _getCurrentLang() == "ar"
-                                      ? 'arFont'
-                                      : 'enBold',
-                                ),
-                              )): Container(
-                            //News section
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 5.0),
-                            // Make height fill the remaining
-                            height: 100,
-                            child: GestureDetector(
-                              onTap: () {
-                                _showNewsBottomSheet(
-                                    context,
-                                    newsList[0].itemPhotoUrl,
-                                    newsList[0].itemTitle,
-                                    newsList[0].itemDescription);
-                              },
-                              child: Card(
-                                margin: EdgeInsets.only(bottom: 6),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      15.0), // Adjust the radius as needed
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Image on the left
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      child: Container(
-                                        width:
-                                            90.0, // Adjust the width as needed
-                                        height: 100,
-                                        child: Image.network(
-                                          newsList[0].itemPhotoUrl,
-                                          colorBlendMode: BlendMode.darken,
-                                          fit: BoxFit.fill,
-                                          loadingBuilder: (BuildContext context,
-                                              Widget child,
-                                              ImageChunkEvent?
-                                                  loadingProgress) {
-                                            if (loadingProgress == null) {
-                                              return child;
-                                            } else {
-                                              return Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(Colors.black),
-                                                  strokeWidth: 2.0,
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          errorBuilder: (BuildContext context,
-                                              Object error,
-                                              StackTrace? stackTrace) {
-                                            return Image.asset(
-                                              'assets/images/skycitylogo.png',
-                                              fit: BoxFit.fill,
-                                              height: 100.0,
-                                            );
-                                          },
-                                        ),
-                                      ),
+                                  child: Text(
+                                    getTranslated(context, "noNews")!,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.grey,
+                                      fontFamily: _getCurrentLang() == "ar"
+                                          ? 'arFont'
+                                          : 'enBold',
                                     ),
-                                    // Title and Description on the right
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              newsList[0].itemTitle,
+                                  ),
+                                )
+                              : Container(
+                            margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 5.0),
+                            height: 170, // Adjust based on your layout
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: List.generate(
+                                newsList.length > 3 ? 3 : newsList.length,
+                                    (index) => GestureDetector(
+                                  onTap: () {
+                                    _showNewsBottomSheet(
+                                      context,
+                                      newsList[index].itemPhotoUrl,
+                                      newsList[index].itemTitle,
+                                      newsList[index].itemDescription,
+                                    );
+                                  },
+                                  child: Container( // Use Container to manage size instead of Expanded
+                                    width: MediaQuery.of(context).size.width / 3 - 15, // Adjust the width according to your needs
+                                    child: Card(
+                                      margin: EdgeInsets.only(bottom: 3),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(15.0),
+                                            child: Image.network(
+                                              newsList[index].itemPhotoUrl,
+                                              height: 100, // Adjust as needed
+                                              width: 150, // Adjust as needed
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0, bottom: 8),
+                                            child: Text(
+                                              newsList[index].itemTitle,
                                               style: TextStyle(
-                                                fontSize: 15.0,
-                                                // Make font bold
+                                                fontSize: 12.0,
                                                 fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                                fontFamily: _getCurrentLang() ==
-                                                        "ar"
-                                                    ? 'arFont'
-                                                    : 'enBold',
                                               ),
-                                            ),
-                                            Text(
-                                              // Description limited text ellipsized
-                                              newsList[0].itemDescription,
-                                              overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
-                                              style: TextStyle(
-                                                fontSize: 13.0,
-                                                color: Colors.black,
-                                                fontFamily: _getCurrentLang() ==
-                                                        "ar"
-                                                    ? 'arFont'
-                                                    : 'enBold',
-                                              ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
+                          //text button at the end of the screen
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DetailPage(
+                                              title:
+                                              getTranslated(context, "news")!,
+                                              isBackHome: false)));
+                                },
+                                child: Text(
+                                  getTranslated(context, "more")!,
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 15.0,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.blue.shade300,
+                                    fontFamily: _getCurrentLang() == "ar"
+                                        ? 'arFont'
+                                        : 'enBold',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
+
                     SizedBox(
-                      height: 50,
+                      height: 10,
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 10.0),
+                      margin: EdgeInsets.only(left: 15.0),
                       child: Text(
                         getTranslated(context, "media")!,
                         style: TextStyle(
                           // Make text underlined
                           fontSize: 15.0,
                           fontStyle: FontStyle.normal,
-                          color: Colors.white,
-                          fontFamily: _getCurrentLang() == "ar"
-                              ? 'arFont'
-                              : 'enBold',
+                          color: Colors.blue.shade300,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                         ),
                       ),
                     ),
                     //media slider
-                    VideoListWidget(
-                      medList: mediaList,
-                    ),
+                    // VideoListWidget(
+                    //   medList: mediaList,
+                    // ),
+                    VideoWidget(videoData: mediaList[0]),
                     SizedBox(
                       height: 20,
                     ),
@@ -512,7 +466,6 @@ class HomePageState extends State<HomePage> {
       ),
     );
   }
-
 
   void _showNewsBottomSheet(
       BuildContext context, newsUrl, newsTitle, newsDescription) {
@@ -561,7 +514,7 @@ class HomePageState extends State<HomePage> {
                         errorBuilder: (BuildContext context, Object error,
                             StackTrace? stackTrace) {
                           return Image.asset(
-                            'assets/images/skycitylogo.png',
+                            'assets/splash/newLogo.png',
                             fit: BoxFit.fill,
                             height: 100.0,
                           );
@@ -589,8 +542,7 @@ class HomePageState extends State<HomePage> {
                       fontSize: 13.0,
                       fontFamily:
                           _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
-                    )
-                ),
+                    )),
                 SizedBox(
                   height: 20,
                 ),
@@ -695,182 +647,91 @@ class HomePageState extends State<HomePage> {
   }
 }
 
+class VideoWidget extends StatefulWidget {
+  final OneImage videoData;
 
-class VideoListWidget extends StatefulWidget {
-  const VideoListWidget({super.key, required this.medList});
-
-  final List<OneImage> medList;
+  const VideoWidget({Key? key, required this.videoData}) : super(key: key);
 
   @override
-  VideoListWidgetState createState() => VideoListWidgetState();
+  VideoWidgetState createState() => VideoWidgetState();
 }
 
-class VideoListWidgetState extends State<VideoListWidget> {
-  List<VideoPlayerController> videoControllers = [];
-  List<ChewieController?> chewieControllers = [];
-  late VideoPlayerController _controller;
-  int _mediaIndex = 0;
+class VideoWidgetState extends State<VideoWidget> {
+  late VideoPlayerController _videoController;
 
   @override
   void initState() {
     super.initState();
-
-    videoControllers.clear();
-    // Initialize video controllers
-    List<Uri> videos = [];
-    videos.clear();
-    widget.medList.forEach((element) {
-      videos.add(Uri.parse(element.itemPhotoUrl));
-    });
-
-    ///initialise multiple controllers
-    videos.forEach((element) async {
-      _controller = VideoPlayerController.networkUrl(element);
-      videoControllers.add(_controller);
-    });
-    videoControllers.forEach((element) {
-      element.initialize();
-    });
-
-
-    // for (int i = 0; i < widget.medList.length; i++) {
-    //   _controller = VideoPlayerController.networkUrl(
-    //       Uri.parse(widget.medList[i].itemPhotoUrl));
-    //
-    //   _controller.addListener(() {
-    //     setState(() {});
-    //   });
-    //   _controller.setLooping(true);
-    //
-    //   // Check if the controller is already initialized before reinitializing
-    //   if (!_controller.value.isInitialized) {
-    //     _controller.initialize().then((_) => setState(() {}));
-    //   }
-    //
-    //   _controller.play();
-    //   videoControllers.add(_controller);
-    // }
-    //
-    // chewieControllers.clear();
-    // // Initialize chewie controllers
-    // chewieControllers = videoControllers
-    //     .map((controller) => ChewieController(
-    //   videoPlayerController: controller,
-    //   aspectRatio: 16 / 9,
-    //   autoInitialize: true,
-    //   looping: false,
-    //   autoPlay: false,
-    // ))
-    //     .toList();
+    _videoController =
+        VideoPlayerController.network(widget.videoData.itemPhotoUrl)
+          ..initialize().then((_) {
+            setState(() {}); // for UI update
+          });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 5.0),
-      height: MediaQuery.of(context).size.height * 0.3,
-      child: Column(
-        children: [
-          CarouselSlider(
-            options: CarouselOptions(
-              height: 200.0,
-              enlargeCenterPage: true,
-              autoPlay: false,
-              aspectRatio: 16 / 9,
-              autoPlayCurve: Curves.fastOutSlowIn,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  videoControllers[index].initialize();
-                  _mediaIndex = index;
-                });
-              },
+    return _videoController.value.isInitialized
+        ? AspectRatio(
+            aspectRatio: _videoController.value.aspectRatio,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                VideoPlayer(_videoController),
+                _PlayPauseOverlay(controller: _videoController),
+                VideoProgressIndicator(_videoController, allowScrubbing: true),
+              ],
             ),
-            items: widget.medList.map((item) {
-              return Builder(
-                builder: (BuildContext context) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Handle item click here
-                      // _showAdBottomSheet(
-                      //     context, item.itemPhotoUrl);
-                    },
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                          ),
-                          child: Stack(
-                            children: [
-                              VideoPlayer(videoControllers[_mediaIndex]),
-                              Center(
-                                child: IconButton(
-                                  icon: Icon(
-                                    videoControllers[_mediaIndex]
-                                            .value
-                                            .isPlaying
-                                        ? Icons.pause
-                                        : Icons.play_arrow,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      videoControllers[_mediaIndex]
-                                              .value
-                                              .isPlaying
-                                          ? videoControllers[_mediaIndex]
-                                              .pause()
-                                          : videoControllers[_mediaIndex]
-                                              .play();
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            }).toList(),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.medList.map((url) {
-              int index = widget.medList.indexOf(url);
-              return Container(
-                width: 8.0,
-                height: 8.0,
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _mediaIndex == index ? Colors.purple : Colors.grey,
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
+          )
+        : Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            color: Colors.black,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
   }
 
   @override
   void dispose() {
-    dev.log('video widget disposed');
-    for (var controller in videoControllers) {
-      controller.dispose();
-    }
-    for (var controller in chewieControllers) {
-      controller?.dispose();
-    }
+    _videoController.dispose();
     super.dispose();
   }
+}
 
+class _PlayPauseOverlay extends StatelessWidget {
+  const _PlayPauseOverlay({Key? key, required this.controller})
+      : super(key: key);
+
+  final VideoPlayerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 50),
+          reverseDuration: Duration(milliseconds: 200),
+          child: controller.value.isPlaying
+              ? SizedBox.shrink()
+              : Container(
+                  color: Colors.black26,
+                  child: Center(
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 100.0,
+                      semanticLabel: 'Play',
+                    ),
+                  ),
+                ),
+        ),
+        GestureDetector(
+          onTap: () {
+            controller.value.isPlaying ? controller.pause() : controller.play();
+          },
+        ),
+      ],
+    );
+  }
 }

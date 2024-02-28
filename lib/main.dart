@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:pyramids_developments/app_theme.dart';
 import 'package:pyramids_developments/firebase_options.dart';
 import 'package:pyramids_developments/login_with_code.dart';
 import 'package:pyramids_developments/reset_password.dart';
@@ -11,6 +12,7 @@ import 'package:pyramids_developments/screens/InvitationScreens/gate_permission.
 import 'package:pyramids_developments/screens/InvitationScreens/one_time_permission.dart';
 import 'package:pyramids_developments/screens/ServiceDetails/new_request.dart';
 import 'package:pyramids_developments/screens/ServiceDetails/request_details.dart';
+import 'package:pyramids_developments/screens/StartingScreens/IntroductionScreensClass.dart';
 import 'package:pyramids_developments/screens/account_page.dart';
 import 'package:pyramids_developments/screens/home_page.dart';
 import 'package:pyramids_developments/screens/invitations.dart';
@@ -79,6 +81,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Locale _locale = const Locale('en', 'US');
+  AnimationController? _animationController;
 
   setLocale(Locale locale) {
     setState(() {
@@ -101,10 +104,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Pyramids Developments",
+      title: "Community Connect",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.purple,
+          seedColor: AppTheme.nearlyDarkBlue,
           secondary: Colors.yellow,
           primary: Colors.black,
           surface: Colors.white,
@@ -165,7 +168,7 @@ class _MyAppState extends State<MyApp> {
         //request page route
         Support.routeName: (context) => const Support(title: "Request"),
         //request details page route
-         RequestDetails.routeName: (context) => const RequestDetails(),
+         RequestDetails.routeName: (context) =>  RequestDetails(requestId: "0",),
         //new request page route
          NewRequest.routeName: (context) => const NewRequest(),
         //account page route
@@ -178,6 +181,9 @@ class _MyAppState extends State<MyApp> {
         FamilyRenter.routeName: (context) => FamilyRenter(
               type: "family",
             ),
+        //introduction animation page route
+        IntroductionAnimationScreen.routeName: (context) =>
+            IntroductionAnimationScreen(),
       },
     );
   }
@@ -240,6 +246,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   static const String TAG = "SplashScreen";
+  //AnimationController? _animationController;
+
 
   Future<bool> getUserStateFromPreferences() async {
     bool isLogged = false;
@@ -275,15 +283,13 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
               builder: (context) => MainPage(
-                    title: 'Pyramids Developments',
+                    title: 'Community Connect',
                   )),
         );
       } else
-        Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
-        // Navigator.of(context).pushReplacement(
-        //   // MaterialPageRoute(builder: (context) => MainPage(title: 'Pyramids Developments',)),
-        //   MaterialPageRoute(builder: (context) => LoginPage(title: "Login")),
-        // );
+        // Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+        Navigator.of(context).pushReplacementNamed(IntroductionAnimationScreen.routeName);
+        
     });
 
     return Scaffold(
@@ -299,7 +305,7 @@ class _SplashScreenState extends State<SplashScreen> {
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/splash/splash.png'),
+            image: AssetImage('assets/splash/newLogo.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -310,8 +316,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     initialization();
+    // _animationController =
+    //     AnimationController(vsync: this, duration: Duration(seconds: 8));
+    // _animationController?.animateTo(0.0);
     dev.log(TAG, name: "initState", error: "initState");
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // _animationController?.dispose();
+    super.dispose();
   }
 
   //splash screen
@@ -323,5 +338,17 @@ class _SplashScreenState extends State<SplashScreen> {
     //await Future.delayed(const Duration(seconds: 1));
 
     FlutterNativeSplash.remove();
+  }
+}
+
+class HexColor extends Color {
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
   }
 }

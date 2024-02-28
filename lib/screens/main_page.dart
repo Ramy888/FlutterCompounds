@@ -1,9 +1,12 @@
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:motion_tab_bar_v2/motion-badge.widget.dart';
+import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
+import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
+import 'package:pyramids_developments/screens/Feed/FeedList.dart';
 import 'package:pyramids_developments/screens/contact_form_page.dart';
 import 'package:pyramids_developments/screens/home_page.dart';
 import 'package:pyramids_developments/screens/invitations.dart';
@@ -12,12 +15,17 @@ import 'package:pyramids_developments/screens/projects_page.dart';
 import 'package:pyramids_developments/screens/qrcode_page.dart';
 import 'package:pyramids_developments/screens/support.dart';
 import '../Models/User.dart';
+import '../app_theme.dart';
 import '../localization/language_constants.dart';
+import '../widgets/custom_bottom_bar/bottom_bar_view.dart';
+import '../widgets/custom_bottom_bar/tabIcon_data.dart';
 import '../widgets/navigation_bar_icons.dart';
 import 'account_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:developer' as dev;
+import 'package:pyramids_developments/widgets/custom_drawer/drawer_user_controller.dart';
+import 'package:pyramids_developments/widgets/custom_drawer/home_drawer.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
@@ -29,10 +37,14 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => MainPageState();
 }
 
-class MainPageState extends State<MainPage> {
+class MainPageState extends State<MainPage> with TickerProviderStateMixin {
   String TAG = "HomePage";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late int _currentIndex ;
+  late int _currentIndex;
+  MotionTabBarController? _motionTabBarController;
+  GlobalKey<DrawerUserControllerState> drawerUserControllerKey = GlobalKey<DrawerUserControllerState>();
+
+
   String currentPage = HomePage.routeName;
   String userPhoto = "";
   String userName = "";
@@ -45,16 +57,17 @@ class MainPageState extends State<MainPage> {
 
   late List<Widget> _pages;
 
-  // final List<Widget> _pages = [
-  //   HomePage(), //0
-  //   Notifications(), //1
-  //   ContactFormPage(), //2
-  //   Projects(), //3
-  //   Support(title: "Support"), //4
-  //   QrCodePage(title: "My Access Code"), //5
-  //   InvitaionsPage(title: "My Invitations"), //6
-  //   AccountPage(title: "My Account"), //7
-  // ];
+  Widget? screenView;
+  DrawerIndex? drawerIndex;
+
+  AnimationController? animationController;
+
+  List<TabIconData> tabIconsList = TabIconData.tabIconsList;
+
+  Widget tabBody = Container(
+    color: AppTheme.background,
+  );
+
 
   Future<void> getUserStateFromPreferences() async {
     final prefs = await SharedPreferences.getInstance();
@@ -82,239 +95,141 @@ class MainPageState extends State<MainPage> {
           elevation: 0,
         ),
       ),
-      //   flexibleSpace: Container(
-      //     margin: EdgeInsets.only(top: 29.5),
-      //     height: MediaQuery.of(context).size.height * 0.5,
-      //     width: MediaQuery.of(context).size.width,
-      //     decoration: BoxDecoration(
-      //       image: DecorationImage(
-      //         image: AssetImage('assets/images/app_bar.jpg'),
-      //         fit: BoxFit.fitWidth,
-      //       ),
-      //     ),
-      //   ),
-      //   leading: IconButton(
-      //     icon: Image.asset(
-      //       'assets/images/menuIcon.png', // Adjust the path accordingly
-      //       width: 24, // Set the width as needed
-      //       height: 24, // Set the height as needed
-      //     ),
-      //     onPressed: () {
-      //       _scaffoldKey.currentState?.openDrawer();
-      //     },
-      //   ),
-      // ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Colors.grey[200]
-                  // image: DecorationImage(
-                  //   image: AssetImage('assets/splash/splash_bg.png'),
-                  //   // Replace with the actual path or network URL
-                  //   fit: BoxFit.cover,
-                  // ),
-                  ),
-              child: GestureDetector(
-                onTap: () {
-                  _scaffoldKey.currentState?.closeDrawer();
-                  if (currentPage != AccountPage.routeName) {
-                    Navigator.pushNamed(context, AccountPage.routeName);
-                    setState(() {
-                      currentPage = AccountPage.routeName;
-                    });
-                  }
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(25.0),
-                      child: Container(
-                        width: 100.0, // Adjust the width as needed
-                        child: Image.network(
-                          userPhoto,
-                          colorBlendMode: BlendMode.darken,
-                          fit: BoxFit.fill,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.black),
-                                  strokeWidth: 2.0,
-                                ),
-                              );
-                            }
-                          },
-                          errorBuilder: (BuildContext context, Object error,
-                              StackTrace? stackTrace) {
-                            return Image.asset(
-                              'assets/images/skycitylogo.png',
-                              // Replace with your placeholder image asset path
-                              fit: BoxFit.fill,
-                              height: 100.0, // Adjust the height as needed
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    // Add some spacing between the avatar and the name
-                    Text(
-                      userName,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text(
-                  getTranslated(context, 'home')!,
-                  style: TextStyle(
-                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
-                  )),
-              onTap: () {
-                _onDrawerItemTap(0);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.qr_code_2_outlined),
-              title: Text(getTranslated(context, "accessCode")!,
-                  style: TextStyle(
-                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
-                  )),
-              onTap: () {
-                _onDrawerItemTap(5);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.insert_invitation),
-              title: Text(getTranslated(context, "invitations")!,
-                  style: TextStyle(
-                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
-                  )),
-              onTap: () {
-                _onDrawerItemTap(6);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text(getTranslated(context, "account")!,
-                  style: TextStyle(
-                    fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
-                  )),
-              onTap: () {
-                _onDrawerItemTap(7);
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              // Add background image here
-              image: DecorationImage(
-                image: AssetImage('assets/images/home_bg.png'),
-                // Replace with your image asset
-                fit: BoxFit.cover,
-              ),
-            ),
-            height: 60,
-            width: MediaQuery.of(context).size.width,
-            child: Stack(
-              children: [
-                // Background Image
-                Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(_getCurrentLang() == 'ar'
-                            ? 'assets/images/app_bar.jpg'
-                            : 'assets/images/app_bar_en.jpg'),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(12.0)),
-                ),
-                // Custom AppBar
-                Directionality(
-                  textDirection: _getCurrentLang() == 'ar'
-                      ? TextDirection.rtl
-                      : TextDirection.ltr,
-                  child: Positioned(
-                    top: 8,
-                    child: IconButton(
-                      icon: Image.asset(
-                        'assets/images/menuIcon.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                      onPressed: () {
-                        _scaffoldKey.currentState?.openDrawer();
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: _pages[_currentIndex],
-          ),
-        ],
+      body: DrawerUserController(
+        key: drawerUserControllerKey,
+        screenIndex: drawerIndex,
+        drawerWidth: MediaQuery.of(context).size.width * 0.75,
+        onDrawerCall: (DrawerIndex drawerIndexData) {
+          changeIndex(drawerIndexData);
+          //callback from drawer for replacing screen as user needs with passing DrawerIndex(Enum index)
+        },
+        screenView: screenView,
       ),
 
-      bottomNavigationBar: Container(
-        height: 70,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/bottomBar/footer_bg.png'),
-            fit: BoxFit.fill,
+      bottomNavigationBar: MotionTabBar(
+        controller: _motionTabBarController,
+        // ADD THIS if you need to change your tab programmatically
+        initialSelectedTab: "Home",
+        useSafeArea: true,
+        // default: true, apply safe area wrapper
+        labels: const ["Home", "Services", "Projects", "Settings"],
+        icons: const [
+          Icons.home,
+          Icons.room_service,
+          Icons.construction,
+          Icons.settings
+        ],
+
+        // optional badges, length must be same with labels
+        badges: [
+          // Default Motion Badge Widget
+          null,
+          // Default Motion Badge Widget with indicator only
+          const MotionBadgeWidget(
+            isIndicator: true,
+            color: Colors.red, // optional, default to Colors.red
+            size: 5, // optional, default to 5,
+            show: true, // true / false
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6.0,
-              spreadRadius: 2.0,
-            ),
-          ],
+
+          // const MotionBadgeWidget(
+          //   text: '8+',
+          //   textColor: Colors.white, // optional, default to Colors.white
+          //   color: Colors.red, // optional, default to Colors.red
+          //   size: 18, // optional, default to 18
+          // ),
+
+          // custom badge Widget
+          // Container(
+          //   color: Colors.black,
+          //   padding: const EdgeInsets.all(2),
+          //   child: const Text(
+          //     '48',
+          //     style: TextStyle(
+          //       fontSize: 14,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
+
+          // allow null
+          null,
+
+          null,
+        ],
+        tabSize: 50,
+        tabBarHeight: 55,
+        textStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
         ),
-        child: MyNavigationBar(
-          selectedIndex: _currentIndex,
-          onItemSelected: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-        ),
+        tabIconColor: AppTheme.nearlyBlack,
+        tabIconSize: 28.0,
+        tabIconSelectedSize: 26.0,
+        tabSelectedColor: AppTheme.nearlyDarkBlue,
+        tabIconSelectedColor: Colors.white,
+        tabBarColor: const Color(0xFFFFFFFF),
+        onTabItemSelected: (int value) {
+          setState(() {
+            // _motionTabBarController!.index = value;
+            //closing drawer if open when navigating on tabBar
+            if (drawerUserControllerKey.currentState != null) {
+              drawerUserControllerKey.currentState!.closeDrawer();
+            }
+            screenView = _pages[value];
+            if (value == 0) {
+              // set drawer index to home
+              drawerIndex = DrawerIndex.HOME;
+            }else{
+              // remove selection highlight from drawer items as we are not selecting any of it
+              drawerIndex = null;
+            }
+          });
+        },
       ),
     );
   }
 
-  void _onDrawerItemTap(int index) {
-    //Navigator.pop(context); // Close the drawer
-    _scaffoldKey.currentState?.closeDrawer();
-    // Check if the selected screen is already active
-    if (_currentIndex != index) {
-      // Update the currently active index
-      setState(() {
-        _currentIndex = index;
-      });
+
+  void changeIndex(DrawerIndex drawerIndexdata) {
+    // if (drawerIndex != drawerIndexdata) {
+      drawerIndex = drawerIndexdata;
+      switch (drawerIndex) {
+        case DrawerIndex.HOME:
+          setState(() {
+            screenView = const HomePage();
+            //set bottomBar index to 0
+            if (_motionTabBarController != null) {
+              _motionTabBarController!.index = 0;
+            }
+          });
+          break;
+        case DrawerIndex.MyQRCode:
+          setState(() {
+            screenView = QrCodePage(title: "My QR Code");
+          });
+          break;
+        case DrawerIndex.Invites:
+          setState(() {
+            screenView = InvitaionsPage(title: "Invitations");
+          });
+          break;
+        case DrawerIndex.Profile:
+          setState(() {
+            screenView = AccountPage(title: "My Account");
+          });
+          break;
+        default:
+          setState(() {
+            screenView = const HomePage();
+            //set bottomBar index to 0
+            if (_motionTabBarController != null) {
+              _motionTabBarController!.index = 0;
+            }
+          });
+          break;
+      // }
     }
   }
 
@@ -333,17 +248,79 @@ class MainPageState extends State<MainPage> {
     FlutterNativeSplash.remove();
   }
 
+  Future<bool> getData() async {
+    await Future<dynamic>.delayed(const Duration(milliseconds: 200));
+    return true;
+  }
+
+  Widget bottomBar() {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: SizedBox(),
+        ),
+        BottomBarView(
+          tabIconsList: tabIconsList,
+          addClick: () {},
+          changeIndex: (int index) {
+            if (index == 0 || index == 2) {
+              animationController?.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  // tabBody =
+                  //     MyDiaryScreen(animationController: animationController);
+                  screenView = _pages[index];
+                });
+              });
+            } else if (index == 1 || index == 3) {
+              animationController?.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  // tabBody =
+                  //     TrainingScreen(animationController: animationController);
+                  screenView = _pages[index];
+                });
+              });
+            }
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   void initState() {
     dev.log('initState', name: TAG);
     // initialization();
+    drawerIndex = DrawerIndex.HOME;
+    screenView = const HomePage();
+
+    // tabIconsList.forEach((TabIconData tab) {
+    //   tab.isSelected = false;
+    // });
+    // tabIconsList[0].isSelected = true;
+    //
+    // animationController = AnimationController(
+    //     duration: const Duration(milliseconds: 600), vsync: this);
+    // tabBody = HomePage();
+
+    //// use "MotionTabBarController" to replace with "TabController", if you need to programmatically change the tab
+    _motionTabBarController = MotionTabBarController(
+      initialIndex: 0,
+      length: 4,
+      vsync: this,
+    );
 
     super.initState();
 
     _currentIndex = 0;
     _pages = [
       HomePage(), //0
-      Notifications(), //1
+      FeedScreen(), //1
       ContactFormPage(), //2
       Projects(), //3
       Support(title: "Support"), //4
@@ -394,6 +371,14 @@ class MainPageState extends State<MainPage> {
 
     FirebaseMessaging.onMessageOpenedApp
         .listen((message) => _handleMessage(message.data));
+  }
+
+  @override
+  void dispose() {
+    // animationController?.dispose();
+    _motionTabBarController!.dispose();
+
+    super.dispose();
   }
 
   // void _handleMessage(RemoteMessage message) {

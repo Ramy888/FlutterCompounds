@@ -6,7 +6,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:pyramids_developments/screens/ServiceDetails/new_request.dart';
 import 'package:pyramids_developments/screens/ServiceDetails/request_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -127,7 +126,7 @@ class SupportState extends State<Support> {
 
           if (services.status == "OK") {
             setState(() {
-              // servicesList = services.services!;
+              servicesList = services.services!;
             });
           } else {
             showToast(services.info);
@@ -171,12 +170,13 @@ class SupportState extends State<Support> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/splash/white_bg.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+        margin: EdgeInsets.only(top: 65),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage('assets/splash/white_bg.png'),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: isLoading
@@ -252,7 +252,7 @@ class SupportState extends State<Support> {
                     child: Container(
                       child: RefreshIndicator(
                         onRefresh: _refreshData,
-                        child: servicesList.length == 0
+                        child: servicesList.isEmpty
                             ? Center(
                                 child: Text(
                                 getTranslated(context, "noRequests")!,
@@ -269,8 +269,11 @@ class SupportState extends State<Support> {
                                 itemBuilder: (context, index) {
                                   return RippleInkWell(
                                     onTap: () {
+                                      //navigate to service details passing service id
                                       Navigator.pushNamed(
-                                          context, RequestDetails.routeName);
+                                          context, RequestDetails.routeName,
+                                          arguments: servicesList[index]
+                                              ["serviceId"]);
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -394,7 +397,7 @@ class SupportState extends State<Support> {
                 ),
               ),
               icon: Icon(Icons.add_business_rounded, color: Colors.white),
-              backgroundColor: Colors.purple,
+              backgroundColor: Colors.cyan,
             ),
           ),
         ],

@@ -11,7 +11,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
 
 import 'Models/User.dart';
-import 'Models/model_verification_code.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key, required this.title});
@@ -42,7 +41,7 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
     info: "",
     created_at: "",
     status: "",
-    vCode: "",
+    vCode: "", sessionId: '',
   );
 
   TextEditingController _phoneNumberController = TextEditingController();

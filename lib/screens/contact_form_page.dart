@@ -147,15 +147,16 @@ class _ContactFormPageState extends State<ContactFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        margin: EdgeInsets.only(top: 65),
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          // Add background image here
-          image: DecorationImage(
-            image: AssetImage('assets/splash/white_bg.png'),
-            // Replace with your image asset
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   // Add background image here
+        //   image: DecorationImage(
+        //     image: AssetImage('assets/splash/white_bg.png'),
+        //     // Replace with your image asset
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),

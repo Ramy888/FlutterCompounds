@@ -6,14 +6,17 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:developer' as dev;
 
+import '../../Models/Message.dart';
+import '../../Models/ModelRequestDetails.dart';
 import '../../Models/User.dart';
 import '../../widgets/Loading_dialog.dart';
 
 class RequestDetails extends StatefulWidget {
-  const RequestDetails({Key? key}) : super(key: key);
+  //accept the request id from the previous screen
+  final String requestId;
+  const RequestDetails({Key? key, required this.requestId}) : super(key: key);
 
   static const routeName = 'support/request-details';
 
@@ -27,12 +30,9 @@ class _RequestDetailsState extends State<RequestDetails> {
   bool isLogged = false;
   String email = "";
   String role = "";
+  String sessionId = "";
 
-  List<Message> messages = [
-    Message(text: 'Hello!', isUser: true, time: DateTime.now()),
-    Message(text: 'Hi there!', isUser: false, time: DateTime.now()),
-    // Add more messages as needed
-  ];
+  List<ModelMessage> messages = [];
 
   TextEditingController _textEditingController = TextEditingController();
 
@@ -41,14 +41,14 @@ class _RequestDetailsState extends State<RequestDetails> {
 
     bool isConnected = await checkInternetConnection();
     if (isConnected) {
-      String getUnitsUrl =
+      String url =
           "https://sourcezone2.com/public/00.AccessControl/create_one_time_pass.php";
 
       LoadingDialog.show(context);
 
       try {
         final response = await http.post(
-          Uri.parse(getUnitsUrl),
+          Uri.parse(url),
           headers: <String, String>{
             // 'Content-Type': 'application/json; charset=UTF-8',
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -62,31 +62,31 @@ class _RequestDetailsState extends State<RequestDetails> {
         );
 
         if (response.statusCode == 200) {
-          dev.log(TAG, name: "createGatePermission: ", error: response.body);
-          //
-          // OneTime gateResponse = OneTime.fromJson(
-          //     jsonDecode(response.body) as Map<String, dynamic>);
-          //
-          // if (gateResponse.status == "OK") {
-          //   showToast(gateResponse.info);
-          //   LoadingDialog.hide(context);
-          //   Navigator.pop(context, true);
-          // } else {
-          //   dev.log(TAG,
-          //       error: "createGatePermission API statusError: $response");
-          //
-          //   showToast(gateResponse.info);
-          //   LoadingDialog.hide(context);
-          // }
+          dev.log(TAG, name: "getRequestDetails: ", error: response.body);
+
+          ModelRequestDetails gateResponse = ModelRequestDetails.fromJson(
+              jsonDecode(response.body) as Map<String, dynamic>);
+
+          if (gateResponse.status == "OK") {
+            showToast(gateResponse.info);
+            LoadingDialog.hide(context);
+            Navigator.pop(context, true);
+          } else {
+            dev.log(TAG,
+                error: "getRequestDetails API statusError: $response");
+
+            showToast(gateResponse.info);
+            LoadingDialog.hide(context);
+          }
         } else {
-          dev.log(TAG, error: "createGatePermission API sent Error: $response");
-          // LoadingDialog.hide(context);
-          // showToast(OneTime.fromJson(
-          //     jsonDecode(response.body) as Map<String, dynamic>)
-          //     .info);
+          dev.log(TAG, error: "getRequestDetails API sent Error: $response");
+          LoadingDialog.hide(context);
+          showToast(ModelRequestDetails.fromJson(
+              jsonDecode(response.body) as Map<String, dynamic>)
+              .info);
         }
       } catch (e) {
-        dev.log(TAG, error: "createGatePermission ExceptionError : $e");
+        dev.log(TAG, error: "getRequestDetails ExceptionError : $e");
         LoadingDialog.hide(context);
         showToast(getTranslated(context, "somethingWrong")!);
       }
@@ -160,11 +160,12 @@ class _RequestDetailsState extends State<RequestDetails> {
                 reverse: true,
                 // Reverse the list to show recent messages at the bottom
                 itemBuilder: (context, index) {
-                  Message message = messages[index];
+                  ModelMessage message = messages[index];
                   return ChatBubble(
-                    text: message.text,
-                    isUser: message.isUser,
-                    time: message.time,
+                    text: message.message,
+                    isUser: message.initiatorId == userId,
+                    //convert string to DateTime
+                    time: DateTime.parse(message.time),
                   );
                 },
               ),
@@ -213,7 +214,7 @@ class _RequestDetailsState extends State<RequestDetails> {
         //delay insertion of message to show typing indicator
         messages.insert(
           0,
-          Message(text: text, isUser: true, time: DateTime.now()),
+          ModelMessage(message: text, time: DateTime.now().toString(), initiatorId: '', messageId: ''),
         );
         _textEditingController.clear();
       });
@@ -223,7 +224,9 @@ class _RequestDetailsState extends State<RequestDetails> {
       setState(() {
         messages.insert(
           0,
-          Message(text: 'please hold...', isUser: false, time: DateTime.now()),
+            ModelMessage(message: getTranslated(context, "pleaseHold")!,
+                time: DateTime.now().toString(), initiatorId: 'someInitiatorId',
+                messageId: 'someMessageId')
         );
       });
     });
@@ -248,6 +251,7 @@ class _RequestDetailsState extends State<RequestDetails> {
         isLogged = prefs.getBool("isLogin")!;
         email = User.fromMap(userJson).email;
         role = User.fromMap(userJson).role;
+        sessionId = User.fromMap(userJson).sessionId;
       }
     }
   }
@@ -270,17 +274,6 @@ class _RequestDetailsState extends State<RequestDetails> {
   }
 }
 
-class Message {
-  final String text;
-  final bool isUser;
-  final DateTime time;
-
-  Message({
-    required this.text,
-    required this.isUser,
-    required this.time,
-  });
-}
 
 class ChatBubble extends StatelessWidget {
   final String text;

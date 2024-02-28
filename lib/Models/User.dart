@@ -1,5 +1,6 @@
 class User {
   final String userId;
+  final String sessionId;
   final String first_name;
   final String last_name;
   final String phoneNumber;
@@ -15,6 +16,7 @@ class User {
 
   const User({
     required this.userId,
+    required this.sessionId,
     required this.first_name,
     required this.last_name,
     required this.phoneNumber,
@@ -32,6 +34,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       userId: json['userId'] as String? ?? '',
+      sessionId: json['sessionId'] as String? ?? '',
       first_name: json['first_name'] as String? ?? '',
       last_name: json['last_name'] as String? ?? '',
       phoneNumber: json['phoneNumber'] as String? ?? '',
@@ -51,6 +54,7 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       'userId': userId,
+      'sessionId': sessionId,
       'first_name': first_name,
       'last_name': last_name,
       'phoneNumber': phoneNumber,
@@ -70,6 +74,7 @@ class User {
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       userId: map['userId'] ?? '',
+      sessionId: map['sessionId'] ?? '',
       first_name: map['first_name'] ?? '',
       last_name: map['last_name'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',

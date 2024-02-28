@@ -144,12 +144,13 @@ class QrCodePageState extends State<QrCodePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/splash/white_bg.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+        margin: EdgeInsets.only(top: 65),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage('assets/splash/white_bg.png'),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: isGettingQrCode

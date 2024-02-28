@@ -59,6 +59,12 @@ dependencies:
   intl: ^0.18.1
   path_provider: ^2.0.15
   easy_stepper: ^0.8.3
+  animations: ^2.0.3
+  motion_tab_bar_v2: ^0.3.0
+  font_awesome_flutter: ^10.1.0
+  flutter_rating_bar: ^4.0.1
+
+
 
 
 
@@ -141,6 +147,12 @@ flutter:
      - assets/socialIcons/youtube.png
      - assets/socialIcons/fb_icon.png
      - assets/images/login_icon.png
+     - assets/splash/newLogo.png
+     - assets/introduction_animation/
+     - assets/fitness_app/
+     - assets/hotel/
+     - assets/images/
+     - assets/design_course/
 
 
 
@@ -183,10 +195,10 @@ flutter:
 flutter_native_splash:
   #background
   #color: "#ffffff"
-  background_image: "assets/splash/splash_bg.png"
+  background_image: "assets/splash/white_bg.png"
 
   #foreground
-  image: "assets/appicon/icon.png"
+  image: "assets/splash/newLogo.png"
 
   #if darkmode
 #  color_dark: "#042a49"

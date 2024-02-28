@@ -26,16 +26,16 @@ class _FillableOutlinedButtonState extends State<FillableOutlinedButton> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
           border: Border.all(
-            color: widget.isActive ? Colors.transparent : Colors.purple,
+            color: widget.isActive ? Colors.transparent : Colors.cyan,
             width: 2.0,
           ),
-          color: widget.isActive ? Colors.purple : Colors.transparent,
+          color: widget.isActive ? Colors.cyan : Colors.transparent,
         ),
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Text(
           widget.text,
           style: TextStyle(
-            color: widget.isActive ? Colors.white : Colors.purple,
+            color: widget.isActive ? Colors.white : Colors.cyan,
             fontWeight: FontWeight.bold,
             fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
           ),

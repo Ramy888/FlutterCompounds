@@ -129,6 +129,7 @@
     "date" : "Date",
     "enterDate" : "Enter Date",
     "typeMessage" : "Type your message...",
-    "noNews" : "All News are Caught Up"
+    "noNews" : "All News are Caught Up",
+    "pleaseHold" : "Please Hold.."
 
 }

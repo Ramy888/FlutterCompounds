@@ -243,20 +243,21 @@ class InvitationsPageState extends State<InvitaionsPage> {
                 ),
               ),
               icon: Icon(Icons.add_business_rounded, color: Colors.white),
-              backgroundColor: Colors.purple,
+              backgroundColor: Colors.cyan,
             ),
           ),
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
-          // Add background image here
-          image: DecorationImage(
-            image: AssetImage('assets/splash/white_bg.png'),
-            // Replace with your image asset
-            fit: BoxFit.cover,
-          ),
-        ),
+        margin: EdgeInsets.only(top: 65),
+        // decoration: BoxDecoration(
+        //   // Add background image here
+        //   image: DecorationImage(
+        //     image: AssetImage('assets/splash/white_bg.png'),
+        //     // Replace with your image asset
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         child: Column(
           children: [
             SizedBox(height: 20),
