@@ -87,10 +87,10 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path_ios: "assets/appicon/resizedappicon.png"
-  image_path_android: "assets/appicon/resizedappicon.png"
-  adaptive_icon_background: "#6e2476"
-  adaptive_icon_foreground: "assets/appicon/resizedappicon.png"
+  image_path_ios: "assets/splash/newLogo.png"
+  image_path_android: "assets/splash/newLogo.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/splash/newLogo.png"
 
 
 

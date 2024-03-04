@@ -1,7 +1,15 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pyramids_developments/app_theme.dart';
+import 'package:pyramids_developments/widgets/ripple_effect.dart';
 
 class FeedDetails extends StatefulWidget {
+  FeedDetails({required this.itemId});
+
+  //receive item id from the previous screen
+  final String itemId;
+
   @override
   _FeedDetailsState createState() => _FeedDetailsState();
 }
@@ -14,6 +22,30 @@ class _FeedDetailsState extends State<FeedDetails>
   double opacity1 = 0.0;
   double opacity2 = 0.0;
   double opacity3 = 0.0;
+  bool isLiked = false;
+  double rating = 4.5;
+
+  List<Comment> commentsList = [
+    Comment(
+        '1',
+        'User Name1',
+        'assets/images/userImage.png',
+        'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
+        '2021-09-01 12:00:00'),
+    Comment(
+        '2',
+        'User Name2',
+        'assets/images/userImage.png',
+        'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
+        '2021-09-01 12:00:00'),
+    Comment(
+        '3',
+        'User Name3',
+        'assets/images/userImage.png',
+        'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
+        '2021-09-01 12:00:00'),
+  ];
+
   @override
   void initState() {
     animationController = AnimationController(
@@ -49,91 +81,105 @@ class _FeedDetailsState extends State<FeedDetails>
     return Container(
       color: AppTheme.nearlyWhite,
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                AspectRatio(
-                  aspectRatio: 1.2,
-                  child: Image.asset('assets/design_course/webInterFace.png'),
-                ),
-              ],
-            ),
-            Positioned(
-              top: (MediaQuery.of(context).size.width / 1.2) - 24.0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.nearlyWhite,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(32.0),
-                      topRight: Radius.circular(32.0)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: AppTheme.grey.withOpacity(0.2),
-                        offset: const Offset(1.1, 1.1),
-                        blurRadius: 10.0),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  AspectRatio(
+                    aspectRatio: 1.2,
+                    child: Image.asset('assets/design_course/webInterFace.png'),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: (MediaQuery.of(context).size.width / 1.2) - 24.0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.nearlyWhite,
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(32.0),
+                        topRight: Radius.circular(32.0)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: AppTheme.grey.withOpacity(0.2),
+                          offset: const Offset(1.1, 1.1),
+                          blurRadius: 10.0),
+                    ],
+                  ),
                   child: SingleChildScrollView(
-                    child: Container(
-                      constraints: BoxConstraints(
-                          minHeight: infoHeight,
-                          maxHeight: tempHeight > infoHeight
-                              ? tempHeight
-                              : infoHeight),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 32.0, left: 18, right: 16),
-                            child: Text(
-                              'Web Design\nCourse',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 22,
-                                letterSpacing: 0.27,
-                                color: AppTheme.darkerText,
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 32.0, left: 18, right: 16),
+                          child: Row(
+                            children: <Widget>[
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundImage:
+                                    AssetImage('assets/images/userImage.png'),
                               ),
+                              SizedBox(width: 16),
+                              Text('User Name',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.nearlyBlue)),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w200,
+                              fontSize: 14,
+                              letterSpacing: 0.27,
+                              color: AppTheme.grey,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 16, right: 16, bottom: 8, top: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  '\$28.99',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 22,
-                                    letterSpacing: 0.27,
-                                    color: AppTheme.nearlyBlue,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              RippleInkWell(
+                                onTap: () {
+                                  // show dialog to rate
+                                  rateDialog(context);
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width / 3,
+                                  padding: EdgeInsets.all(7),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
-                                ),
-                                Container(
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
-                                        '4.3',
-                                        textAlign: TextAlign.left,
+                                        rating.toString(),
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 22,
-                                          letterSpacing: 0.27,
-                                          color: AppTheme.grey,
-                                        ),
+                                            fontWeight: FontWeight.w200,
+                                            fontFamily:
+                                                _getCurrentLang() == 'ar'
+                                                    ? 'arFont'
+                                                    : 'enBold',
+                                            fontSize: 15,
+                                            letterSpacing: 0.27,
+                                            color: Colors.black),
                                       ),
                                       Icon(
                                         Icons.star,
@@ -142,161 +188,120 @@ class _FeedDetailsState extends State<FeedDetails>
                                       ),
                                     ],
                                   ),
-                                )
-                              ],
-                            ),
+                                ),
+                              ),
+                              RippleInkWell(
+                                onTap: () {
+                                  // show dialog to add comment
+                                  addCommentDialog(context);
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width / 3,
+                                  padding: EdgeInsets.all(7),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    'Comment',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: _getCurrentLang() == 'ar'
+                                          ? 'arFont'
+                                          : 'enBold',
+                                      fontSize: 15,
+                                      letterSpacing: 0.27,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 500),
-                            opacity: opacity1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                children: <Widget>[
-                                  getTimeBoxUI('24', 'Classe'),
-                                  getTimeBoxUI('2hours', 'Time'),
-                                  getTimeBoxUI('24', 'Seat'),
-                                ],
+                        ),
+                        // Other content goes here
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 500),
+                          opacity: opacity1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8, right: 8, top: 8, bottom: 20),
+                            child: Container(
+                              height: MediaQuery.of(context).size.width / 1.2,
+                              child: ListView.builder(
+                                itemCount: commentsList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Access the current item
+                                  Comment comment = commentsList[index];
+                                  // Use your custom widget to display each item
+                                  return getCommentBoxUI(comment, context);
+                                },
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 500),
-                              opacity: opacity2,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, right: 16, top: 8, bottom: 8),
-                                child: Text(
-                                  'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 14,
-                                    letterSpacing: 0.27,
-                                    color: AppTheme.grey,
-                                  ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).padding.bottom,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: (MediaQuery.of(context).size.width / 1.2) - 24.0 - 35,
+                right: 35,
+                child: ScaleTransition(
+                  alignment: Alignment.center,
+                  scale: CurvedAnimation(
+                      parent: animationController!,
+                      curve: Curves.fastOutSlowIn),
+                  child: Card(
+                    color: AppTheme.nearlyBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50.0)),
+                    elevation: 10.0,
+                    child: RippleInkWell(
+                      onTap: () {
+                        // save like and change the icon
+                        setState(() {
+                          isLiked = !isLiked;
+                        });
+                      },
+                      child: isLiked
+                          ? Container(
+                              width: 60,
+                              height: 60,
+                              child: Center(
+                                child: Icon(
+                                  Icons.thumb_up,
+                                  color: AppTheme.nearlyWhite,
+                                  size: 30,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              width: 60,
+                              height: 60,
+                              child: Center(
+                                child: Icon(
+                                  Icons.thumb_up_alt_outlined,
+                                  color: AppTheme.nearlyWhite,
+                                  size: 30,
                                 ),
                               ),
                             ),
-                          ),
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 500),
-                            opacity: opacity3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16, bottom: 16, right: 16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    width: 48,
-                                    height: 48,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.nearlyWhite,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(16.0),
-                                        ),
-                                        border: Border.all(
-                                            color: AppTheme.grey
-                                                .withOpacity(0.2)),
-                                      ),
-                                      child: Icon(
-                                        Icons.add,
-                                        color: AppTheme.nearlyBlue,
-                                        size: 28,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.nearlyBlue,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(16.0),
-                                        ),
-                                        boxShadow: <BoxShadow>[
-                                          BoxShadow(
-                                              color: AppTheme
-                                                  .nearlyBlue
-                                                  .withOpacity(0.5),
-                                              offset: const Offset(1.1, 1.1),
-                                              blurRadius: 10.0),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'Join Course',
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18,
-                                            letterSpacing: 0.0,
-                                            color: AppTheme
-                                                .nearlyWhite,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).padding.bottom,
-                          )
-                        ],
-                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              top: (MediaQuery.of(context).size.width / 1.2) - 24.0 - 35,
-              right: 35,
-              child: ScaleTransition(
-                alignment: Alignment.center,
-                scale: CurvedAnimation(
-                    parent: animationController!, curve: Curves.fastOutSlowIn),
-                child: Card(
-                  color: AppTheme.nearlyBlue,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0)),
-                  elevation: 10.0,
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    child: Center(
-                      child: Icon(
-                        Icons.favorite,
-                        color: AppTheme.nearlyWhite,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              child: SizedBox(
-                width: AppBar().preferredSize.height,
-                height: AppBar().preferredSize.height,
+              Positioned(
+                top: MediaQuery.of(context).padding.top,
+                left: 16,
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius:
-                    BorderRadius.circular(AppBar().preferredSize.height),
+                    borderRadius: BorderRadius.circular(30),
                     child: Icon(
                       Icons.arrow_back_ios,
                       color: AppTheme.nearlyBlack,
@@ -307,52 +312,71 @@ class _FeedDetailsState extends State<FeedDetails>
                   ),
                 ),
               ),
-            )
-          ],
-        ),
-      ),
+            ],
+          )),
     );
   }
 
-  Widget getTimeBoxUI(String text1, String txt2) {
+  Widget getCommentBoxUI(Comment comment, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: AppTheme.nearlyWhite,
           borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           boxShadow: <BoxShadow>[
             BoxShadow(
-                color: AppTheme.grey.withOpacity(0.2),
-                offset: const Offset(1.1, 1.1),
-                blurRadius: 8.0),
+              color: AppTheme.grey.withOpacity(0.2),
+              offset: const Offset(1.1, 1.1),
+              blurRadius: 8.0,
+            ),
           ],
         ),
         child: Padding(
           padding: const EdgeInsets.only(
               left: 18.0, right: 18.0, top: 12.0, bottom: 12.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                text1,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  letterSpacing: 0.27,
-                  color: AppTheme.nearlyBlue,
-                ),
+              Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(comment.commentatorPhoto),
+                    radius: 20,
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    comment.commentatorName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      letterSpacing: 0.27,
+                      color: AppTheme.nearlyBlue,
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(height: 8),
               Text(
-                txt2,
-                textAlign: TextAlign.center,
+                comment.comment,
                 style: TextStyle(
                   fontWeight: FontWeight.w200,
                   fontSize: 14,
                   letterSpacing: 0.27,
                   color: AppTheme.grey,
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  comment.commentDateTime,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w200,
+                    fontSize: 12,
+                    letterSpacing: 0.27,
+                    color: AppTheme.grey,
+                  ),
                 ),
               ),
             ],
@@ -361,4 +385,103 @@ class _FeedDetailsState extends State<FeedDetails>
       ),
     );
   }
+
+  void addCommentDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Comment'),
+          content: TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Comment',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.multiline,
+            maxLines: 5,
+
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Add'),
+              onPressed: () {
+                // add comment
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void rateDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Rate'),
+          content: RatingBar.builder(
+            initialRating: rating,
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: true,
+            itemCount: 5,
+            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+            itemBuilder: (context, _) => Icon(
+              Icons.star,
+              color: AppTheme.nearlyBlue,
+            ),
+            onRatingUpdate: (rating) {
+              this.rating = rating;
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Rate'),
+              onPressed: () {
+                // rate
+                setState(() {
+                  rating = rating;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool> checkInternetConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != ConnectivityResult.none;
+  }
+
+  String _getCurrentLang() {
+    return Localizations.localeOf(context).languageCode;
+  }
+}
+
+class Comment {
+  final String commentatorId;
+  final String commentatorName;
+  final String commentatorPhoto;
+  final String comment;
+  final String commentDateTime;
+
+  Comment(this.commentatorId, this.commentatorName, this.commentatorPhoto,
+      this.comment, this.commentDateTime);
 }

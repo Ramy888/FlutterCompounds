@@ -1,4 +1,5 @@
 import 'package:pyramids_developments/app_theme.dart';
+import 'package:pyramids_developments/screens/Feed/AddPost.dart';
 import 'package:pyramids_developments/screens/Feed/FeedDetails.dart';
 import 'package:pyramids_developments/screens/Feed/feed_list_view.dart';
 import 'package:pyramids_developments/screens/Feed/feed_list_data.dart';
@@ -53,12 +54,12 @@ class _FeedScreenState extends State<FeedScreen> with TickerProviderStateMixin {
               Navigator.push<dynamic>(
                 context,
                 MaterialPageRoute<dynamic>(
-                  builder: (BuildContext context) => FiltersScreen(),
+                  builder: (BuildContext context) => AddPost(),
                 ),
               );
             },
             child: Icon(Icons.post_add_rounded),
-            backgroundColor: AppTheme.buildLightTheme().primaryColor,
+            backgroundColor: AppTheme.nearlyBlue,
           ),
           body: Stack(
             children: <Widget>[
@@ -84,15 +85,6 @@ class _FeedScreenState extends State<FeedScreen> with TickerProviderStateMixin {
                         headerSliverBuilder:
                             (BuildContext context, bool innerBoxIsScrolled) {
                           return <Widget>[
-                            // SliverAppBar(
-                            //   pinned: false,
-                            //   floating: true,
-                            //   expandedHeight: 60.0, // Adjust the height to fit your SearchBar
-                            //   flexibleSpace: FlexibleSpaceBar(
-                            //     background: getSearchBarUI(), // Place your SearchBar here
-                            //   ),
-                            //   backgroundColor: AppTheme.buildLightTheme().backgroundColor,
-                            // ),
                           ];
                         },
                         body: Container(
@@ -114,11 +106,12 @@ class _FeedScreenState extends State<FeedScreen> with TickerProviderStateMixin {
                               animationController?.forward();
                               return FeedListView(
                                 callback: () {
+                                  //pass item id to the next screen
                                   Navigator.push<dynamic>(
                                     context,
                                     MaterialPageRoute<dynamic>(
                                       builder: (BuildContext context) =>
-                                          FeedDetails(),
+                                          FeedDetails(itemId: hotelList[index].id,),
                                     ),
                                   );
                                 },
@@ -138,84 +131,6 @@ class _FeedScreenState extends State<FeedScreen> with TickerProviderStateMixin {
           ),
         ),
       ),
-    );
-  }
-
-  Widget getListUI() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.buildLightTheme().backgroundColor,
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              offset: const Offset(0, -2),
-              blurRadius: 8.0),
-        ],
-      ),
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height - 156 - 50,
-            child: FutureBuilder<bool>(
-              future: getData(),
-              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                if (!snapshot.hasData) {
-                  return const SizedBox();
-                } else {
-                  return ListView.builder(
-                    itemCount: hotelList.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index) {
-                      final int count =
-                          hotelList.length > 10 ? 10 : hotelList.length;
-                      final Animation<double> animation =
-                          Tween<double>(begin: 0.0, end: 1.0).animate(
-                              CurvedAnimation(
-                                  parent: animationController!,
-                                  curve: Interval((1 / count) * index, 1.0,
-                                      curve: Curves.fastOutSlowIn)));
-                      animationController?.forward();
-
-                      return FeedListView(
-                        callback: () {},
-                        hotelData: hotelList[index],
-                        animation: animation,
-                        animationController: animationController!,
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget getHotelViewList() {
-    final List<Widget> hotelListViews = <Widget>[];
-    for (int i = 0; i < hotelList.length; i++) {
-      final int count = hotelList.length;
-      final Animation<double> animation =
-          Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-          parent: animationController!,
-          curve: Interval((1 / count) * i, 1.0, curve: Curves.fastOutSlowIn),
-        ),
-      );
-      hotelListViews.add(
-        FeedListView(
-          callback: () {},
-          hotelData: hotelList[i],
-          animation: animation,
-          animationController: animationController!,
-        ),
-      );
-    }
-    animationController?.forward();
-    return Column(
-      children: hotelListViews,
     );
   }
 
@@ -370,7 +285,7 @@ class _FeedScreenState extends State<FeedScreen> with TickerProviderStateMixin {
                                 element.titleTxt
                                     .toLowerCase()
                                     .contains(txt.toLowerCase()) ||
-                                element.subTxt
+                                element.postText
                                     .toLowerCase()
                                     .contains(txt.toLowerCase()))
                             .toList();
@@ -382,7 +297,7 @@ class _FeedScreenState extends State<FeedScreen> with TickerProviderStateMixin {
                     cursorColor: AppTheme.buildLightTheme().primaryColor,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'London...',
+                      hintText: 'Parking...',
                     ),
                   ),
                 ),

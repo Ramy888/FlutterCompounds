@@ -2,6 +2,8 @@ import 'package:pyramids_developments/app_theme.dart';
 import 'package:pyramids_developments/widgets/custom_drawer/home_drawer.dart';
 import 'package:flutter/material.dart';
 
+import '../../screens/notifications.dart';
+
 class DrawerUserController extends StatefulWidget {
   const DrawerUserController({
     Key? key,
@@ -103,7 +105,9 @@ class DrawerUserControllerState extends State<DrawerUserController>
     Widget notificationIconButton = IconButton(
       icon: Icon(Icons.notifications, color: isLightMode ? AppTheme.dark_grey : AppTheme.white),
       onPressed: () {
-        // Define your notification button action here
+        // navigate to Notifications screen
+        Navigator.pushNamed(context, Notifications.routeName);
+
       },
     );
 

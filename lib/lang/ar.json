@@ -123,5 +123,11 @@
     "account" : "الحساب",
     "projectsSoon" : "سيتم اضافه المشاريع قريبا",
     "noQrCode" : "لا يوجد كود",
-    "enterNewPassword": "أدخل كلمة المرور الجديدة"
+    "enterNewPassword": "أدخل كلمة المرور الجديدة",
+    "post" : "نشر",
+    "postType" : "نوع المنشور",
+    "selectPostType" : "اختر نوع المنشور",
+    "services" : "الخدمات",
+    "myRequests" : "طلباتى",
+    "newService" : "طلب خدمه جديده"
 }

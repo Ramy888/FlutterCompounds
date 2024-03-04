@@ -13,7 +13,7 @@ import 'package:pyramids_developments/screens/invitations.dart';
 import 'package:pyramids_developments/screens/notifications.dart';
 import 'package:pyramids_developments/screens/projects_page.dart';
 import 'package:pyramids_developments/screens/qrcode_page.dart';
-import 'package:pyramids_developments/screens/support.dart';
+import 'package:pyramids_developments/screens/Serivces/support.dart';
 import '../Models/User.dart';
 import '../app_theme.dart';
 import '../localization/language_constants.dart';
@@ -112,11 +112,11 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
         initialSelectedTab: "Home",
         useSafeArea: true,
         // default: true, apply safe area wrapper
-        labels: const ["Home", "Services", "Projects", "Settings"],
+        labels: const ["Home", "Social", "Services", "Settings"],
         icons: const [
           Icons.home,
-          Icons.room_service,
-          Icons.construction,
+          Icons.sensor_occupied,
+          Icons.question_answer_outlined,
           Icons.settings
         ],
 
@@ -169,7 +169,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
         tabIconSelectedSize: 26.0,
         tabSelectedColor: AppTheme.nearlyDarkBlue,
         tabIconSelectedColor: Colors.white,
-        tabBarColor: const Color(0xFFFFFFFF),
+        tabBarColor: Colors.white,
         onTabItemSelected: (int value) {
           setState(() {
             // _motionTabBarController!.index = value;
@@ -321,7 +321,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _pages = [
       HomePage(), //0
       FeedScreen(), //1
-      ContactFormPage(), //2
+      Support(title: "Services"), //2
       Projects(), //3
       Support(title: "Support"), //4
       QrCodePage(title: "My Access Code"), //5

@@ -130,6 +130,12 @@
     "enterDate" : "Enter Date",
     "typeMessage" : "Type your message...",
     "noNews" : "All News are Caught Up",
-    "pleaseHold" : "Please Hold.."
+    "pleaseHold" : "Please Hold..",
+    "post" : "Post",
+    "postType" : "Post Type",
+    "selectPostType" : "Select Post Type",
+    "services" : "Services",
+    "myRequests" : "My Requests",
+    "newService" : "New Service"
 
 }

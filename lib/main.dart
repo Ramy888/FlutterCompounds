@@ -17,8 +17,9 @@ import 'package:pyramids_developments/screens/account_page.dart';
 import 'package:pyramids_developments/screens/home_page.dart';
 import 'package:pyramids_developments/screens/invitations.dart';
 import 'package:pyramids_developments/screens/main_page.dart';
+import 'package:pyramids_developments/screens/notifications.dart';
 import 'package:pyramids_developments/screens/qrcode_page.dart';
-import 'package:pyramids_developments/screens/support.dart';
+import 'package:pyramids_developments/screens/Serivces/support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Models/User.dart';
 import 'login_page.dart';
@@ -184,6 +185,7 @@ class _MyAppState extends State<MyApp> {
         //introduction animation page route
         IntroductionAnimationScreen.routeName: (context) =>
             IntroductionAnimationScreen(),
+        Notifications.routeName: (context) => const Notifications(),
       },
     );
   }
