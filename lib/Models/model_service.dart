@@ -1,12 +1,12 @@
 class Service {
-  String status, message, info;
+  String? status, message, info;
   List<OneService>? services; // Make services nullable
 
   Service({
     required this.services,
-    required this.status,
-    required this.message,
-    required this.info,
+     this.status,
+     this.message,
+     this.info,
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {

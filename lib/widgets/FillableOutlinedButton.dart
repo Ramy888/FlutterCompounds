@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../app_theme.dart';
+
 
 class FillableOutlinedButton extends StatefulWidget {
   final String text;
@@ -26,16 +28,16 @@ class _FillableOutlinedButtonState extends State<FillableOutlinedButton> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
           border: Border.all(
-            color: widget.isActive ? Colors.transparent : Colors.cyan,
+            color: widget.isActive ? Colors.transparent : AppTheme.nearlyBlue,
             width: 2.0,
           ),
-          color: widget.isActive ? Colors.cyan : Colors.transparent,
+          color: widget.isActive ? AppTheme.nearlyBlue : Colors.transparent,
         ),
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Text(
           widget.text,
           style: TextStyle(
-            color: widget.isActive ? Colors.white : Colors.cyan,
+            color: widget.isActive ? Colors.white : AppTheme.nearlyBlue,
             fontWeight: FontWeight.bold,
             fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
           ),

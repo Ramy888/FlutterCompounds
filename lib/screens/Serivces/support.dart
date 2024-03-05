@@ -41,61 +41,90 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
   List<ServiceData> servicesList = ServiceData.servicesList;
   TextEditingController searchController = TextEditingController();
   List<ServiceData> filteredServicesList = ServiceData.servicesList;
-  List<Service> requestsList = [];
-  List<Service> filteredRequests = [];
+  List<OneService> filteredRequests = [];
 
-
-  // List servicesList = [
-  //   {
-  //     "serviceId": "1",
-  //     "serviceTitle": "Service Title",
-  //     "serviceDescription": "Service Description",
-  //     "serviceDateTime": "Service Date Time",
-  //     "serviceStatus": "Service Status",
-  //     "servicePrice": "Service Price",
-  //   },
-  //   {
-  //     "serviceId": "2",
-  //     "serviceTitle": "Service Title",
-  //     "serviceDescription": "Service Description",
-  //     "serviceDateTime": "Service Date Time",
-  //     "serviceStatus": "Service Status",
-  //     "servicePrice": "Service Price",
-  //   },
-  //   {
-  //     "serviceId": "3",
-  //     "serviceTitle": "Service Title",
-  //     "serviceDescription": "Service Description",
-  //     "serviceDateTime": "Service Date Time",
-  //     "serviceStatus": "Service Status",
-  //     "servicePrice": "Service Price",
-  //   },
-  //   {
-  //     "serviceId": "4",
-  //     "serviceTitle": "Service Title",
-  //     "serviceDescription": "Service Description",
-  //     "serviceDateTime": "Service Date Time",
-  //     "serviceStatus": "Service Status",
-  //     "servicePrice": "Service Price",
-  //   },
-  //   {
-  //     "serviceId": "5",
-  //     "serviceTitle": "Service Title",
-  //     "serviceDescription": "Service Description",
-  //     "serviceDateTime": "Service Date Time",
-  //     "serviceStatus": "Service Status",
-  //     "servicePrice": "Service Price",
-  //   },
-  //   {
-  //     "serviceId": "6",
-  //     "serviceTitle": "Service Title",
-  //     "serviceDescription": "Service Description",
-  //     "serviceDateTime": "Service Date Time",
-  //     "serviceStatus": "Service Status",
-  //     "servicePrice": "Service Price",
-  //   },
-  // ];
-
+  List<OneService> requestsList = <OneService>[
+    OneService(
+      serviceId: "1",
+      serviceTitle: "Plumbing",
+      serviceDescription: "problem in the road to building number 243",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "pending",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "2",
+      serviceTitle: "Carpenter",
+      serviceDescription: "Wembley, London",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "resolved",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "3",
+      serviceTitle: "Electricity",
+      serviceDescription: "problem in the corredoor of building number 243",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "pending",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "4",
+      serviceTitle: "Wembley, London",
+      serviceDescription: "Wembley, London",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "resolved",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "5",
+      serviceTitle: "problem in the road to building number 243",
+      serviceDescription: "problem in the road to building number 243",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "pending",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "6",
+      serviceTitle: "Wembley, London",
+      serviceDescription: "Wembley, London",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "resolved",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "7",
+      serviceTitle: "problem in the road to building number 243",
+      serviceDescription: "problem in the road to building number 243",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "pending",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "8",
+      serviceTitle: "Wembley, London",
+      serviceDescription: "Wembley, London",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "resolved",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "9",
+      serviceTitle: "problem in the road to building number 243",
+      serviceDescription: "problem in the road to building number 243",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "pending",
+      servicePrice: '100',
+    ),
+    OneService(
+      serviceId: "10",
+      serviceTitle: "Wembley, London",
+      serviceDescription: "Wembley, London",
+      serviceDateTime: "12 Dec",
+      serviceStatus: "resolved",
+      servicePrice: '100',
+    ),
+  ];
 
   // Future<void> getServices(String selected) async {
   //   getUserDataFromPreferences();
@@ -210,13 +239,21 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                   itemBuilder: (context, index) {
                     final int count =
                         servicesList.length > 10 ? 10 : servicesList.length;
-                    final Animation<double> animation =
-                        Tween<double>(begin: 0.0, end: 1.0).animate(
-                            CurvedAnimation(
-                                parent: animationController!,
-                                curve: Interval((1 / count) * index, 1.0,
-                                    curve: Curves.fastOutSlowIn)));
+
+                    animationController = AnimationController(
+                      duration: const Duration(milliseconds: 1000),
+                      vsync:
+                          this, // Assuming this is a StatefulWidget that includes the TickerProviderStateMixin
+                    );
                     animationController?.forward();
+
+                    final Animation<double> animation =
+                        Tween(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                        parent: animationController!,
+                        curve: Curves.easeInOut,
+                      ),
+                    );
                     return ServiceListView(
                       callback: () {
                         Navigator.push<dynamic>(
@@ -273,13 +310,13 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                               ),
                             ),
                             getSearchBarUI(),
+                            //my requests tab
                             Expanded(
-                              child: Container(
-                                child: RefreshIndicator(
-                                  onRefresh: _refreshData,
-                                  child: servicesList.isEmpty
-                                      ? Center(
-                                          child: Text(
+                              child: RefreshIndicator(
+                                onRefresh: _refreshData,
+                                child: requestsList.isEmpty
+                                    ? Center(
+                                        child: Text(
                                           getTranslated(context, "noRequests")!,
                                           style: TextStyle(
                                             fontSize: 20,
@@ -289,126 +326,17 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                                                     ? 'arFont'
                                                     : 'enBold',
                                           ),
-                                        ))
-                                      : ListView.builder(
-                                          itemCount: servicesList.length,
-                                          itemBuilder: (context, index) {
-                                            return RippleInkWell(
-                                              onTap: () {
-                                                //navigate to service details passing service id
-                                                Navigator.pushNamed(context,
-                                                    RequestDetails.routeName,
-                                                    arguments:
-                                                    requestsList[index].services![index].serviceId);
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.5),
-                                                      spreadRadius: 2,
-                                                      blurRadius: 5,
-                                                      offset: Offset(0,
-                                                          3), // changes position of shadow
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            requestsList[index]
-                                                                .services![index]
-                                                                .serviceTitle,
-                                                            style: TextStyle(
-                                                              fontSize: 17,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontFamily:
-                                                                  _getCurrentLang() ==
-                                                                          "ar"
-                                                                      ? 'arFont'
-                                                                      : 'enBold',
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            requestsList[index]
-                                                                .services![index]
-                                                                .serviceDateTime,
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontFamily:
-                                                                  _getCurrentLang() ==
-                                                                          "ar"
-                                                                      ? 'arFont'
-                                                                      : 'enBold',
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            requestsList[index]
-                                                                .services![index]
-                                                                .serviceDescription,
-                                                            style: TextStyle(
-                                                              fontSize: 14,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontFamily:
-                                                                  _getCurrentLang() ==
-                                                                          "ar"
-                                                                      ? 'arFont'
-                                                                      : 'enBold',
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            requestsList[index]
-                                                                .services![index]
-                                                                .serviceStatus,
-                                                            style: TextStyle(
-                                                              fontSize: 14,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontFamily:
-                                                                  _getCurrentLang() ==
-                                                                          "ar"
-                                                                      ? 'arFont'
-                                                                      : 'enBold',
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
                                         ),
-                                ),
+                                      )
+                                    : ListView.builder(
+                                        itemCount: requestsList.length,
+                                        itemBuilder: (context, index) {
+                                          return _buildRequestListItem(
+                                              context, index, _selectedButton);
+                                        },
+                                      ),
                               ),
-                            ),
+                            )
                           ],
                         ),
                 ),
@@ -521,6 +449,91 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
     );
   }
 
+  Widget _buildRequestListItem(BuildContext context, int index, String status) {
+    List<OneService> statusRequests = [];
+      statusRequests = requestsList
+          .where((element) => element.serviceStatus == status)
+          .toList();
+
+    return InkWell(
+      onTap: () {
+        // Navigate to service details passing service id
+        Navigator.pushNamed(
+          context,
+          RequestDetails.routeName,
+          arguments: requestsList[index].serviceId,
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(25),
+        margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                requestsList[index].serviceDateTime,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                  fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(height: 8), // Add some vertical spacing
+            Text(
+              requestsList[index].serviceTitle,
+              style: TextStyle(
+                fontSize: 17,
+                color: Colors.black,
+                fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 8), // Add some vertical spacing
+            Text(
+              requestsList[index].serviceDescription,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 12), // Add some vertical spacing before the status
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                requestsList[index].serviceStatus,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _updateButtonState(int index) {
     setState(() {
       buttonStates = List.generate(2, (i) => i == index);
@@ -570,7 +583,6 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
   void filterServices(String query) {
     setState(() {
       //loop through all services list to search for the query
-
     });
   }
 
@@ -578,7 +590,8 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
   void initState() {
     // getServices("pending");
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
+        duration: const Duration(milliseconds: 500), vsync: this);
+    animationController?.forward();
 
     super.initState();
   }

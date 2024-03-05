@@ -25,9 +25,10 @@ class ServiceListView extends StatelessWidget {
           child: Transform(
             transform: Matrix4.translationValues(
                 0.0, 50 * (1.0 - animation!.value), 0.0),
+
             child: Padding(
               padding: const EdgeInsets.only(
-                  left: 24, right: 24, top: 8, bottom: 16),
+                  left: 16, right: 16, top: 16, bottom: 16),
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: callback,
@@ -38,12 +39,12 @@ class ServiceListView extends StatelessWidget {
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.6),
                         offset: const Offset(4, 4),
-                        blurRadius: 16,
+                        blurRadius: 20,
                       ),
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -53,13 +54,13 @@ class ServiceListView extends StatelessWidget {
                           color: AppTheme.nearlyBlue,
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: Text(
                             serviceData!.serviceName, // Assuming your ServiceData has a serviceName field
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.normal,
                               color: Colors.black,
                             ),
                           ),
