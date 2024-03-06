@@ -87,13 +87,31 @@ class FeedListView extends StatelessWidget {
                                                         'assets/images/userImage.png'),
                                                   ),
                                                   SizedBox(width: 8),
-                                                  Text(hotelData!.titleTxt,
+                                                  Text(
+                                                    hotelData!.userName,
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: AppTheme
+                                                            .nearlyBlue),
+                                                  ),
+                                                  //add date to the right end
+                                                  Spacer(),
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: 10),
+                                                    child: Text(
+                                                      hotelData!.date,
+                                                      textAlign:
+                                                          TextAlign.right,
                                                       style: TextStyle(
                                                           fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: AppTheme
-                                                              .nearlyBlue)),
+                                                          color: Colors.grey
+                                                              .withOpacity(
+                                                                  0.8)),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                             ),

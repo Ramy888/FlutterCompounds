@@ -129,5 +129,6 @@
     "selectPostType" : "اختر نوع المنشور",
     "services" : "الخدمات",
     "myRequests" : "طلباتى",
-    "newService" : "طلب خدمه جديده"
+    "newService" : "طلب خدمه جديده",
+    "requestResolved" : "تم حل الطلب"
 }

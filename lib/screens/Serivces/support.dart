@@ -41,7 +41,6 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
   List<ServiceData> servicesList = ServiceData.servicesList;
   TextEditingController searchController = TextEditingController();
   List<ServiceData> filteredServicesList = ServiceData.servicesList;
-  List<OneService> filteredRequests = [];
 
   List<OneService> requestsList = <OneService>[
     OneService(
@@ -70,7 +69,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
     ),
     OneService(
       serviceId: "4",
-      serviceTitle: "Wembley, London",
+      serviceTitle: "Cleaning",
       serviceDescription: "Wembley, London",
       serviceDateTime: "12 Dec",
       serviceStatus: "resolved",
@@ -78,7 +77,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
     ),
     OneService(
       serviceId: "5",
-      serviceTitle: "problem in the road to building number 243",
+      serviceTitle: "Internet",
       serviceDescription: "problem in the road to building number 243",
       serviceDateTime: "12 Dec",
       serviceStatus: "pending",
@@ -86,7 +85,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
     ),
     OneService(
       serviceId: "6",
-      serviceTitle: "Wembley, London",
+      serviceTitle: "TV",
       serviceDescription: "Wembley, London",
       serviceDateTime: "12 Dec",
       serviceStatus: "resolved",
@@ -94,15 +93,15 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
     ),
     OneService(
       serviceId: "7",
-      serviceTitle: "problem in the road to building number 243",
-      serviceDescription: "problem in the road to building number 243",
+      serviceTitle: "Gas",
+      serviceDescription: "problem with water heater",
       serviceDateTime: "12 Dec",
       serviceStatus: "pending",
       servicePrice: '100',
     ),
     OneService(
       serviceId: "8",
-      serviceTitle: "Wembley, London",
+      serviceTitle: "Electricity",
       serviceDescription: "Wembley, London",
       serviceDateTime: "12 Dec",
       serviceStatus: "resolved",
@@ -110,7 +109,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
     ),
     OneService(
       serviceId: "9",
-      serviceTitle: "problem in the road to building number 243",
+      serviceTitle: "Plumbing",
       serviceDescription: "problem in the road to building number 243",
       serviceDateTime: "12 Dec",
       serviceStatus: "pending",
@@ -118,13 +117,21 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
     ),
     OneService(
       serviceId: "10",
-      serviceTitle: "Wembley, London",
+      serviceTitle: "Car",
       serviceDescription: "Wembley, London",
       serviceDateTime: "12 Dec",
       serviceStatus: "resolved",
       servicePrice: '100',
     ),
   ];
+
+  List<OneService> filteredRequests = [];
+
+  void _fillFilteredRequestsList() {
+    filteredRequests = requestsList
+        .where((element) => element.serviceStatus == "pending")
+        .toList();
+  }
 
   // Future<void> getServices(String selected) async {
   //   getUserDataFromPreferences();
@@ -197,9 +204,17 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
 
   Future<void> _refreshData() async {
     int bt_id = buttonStates.indexOf(true);
-    if (bt_id == 0)
+    if (bt_id == 0) {
       _selectedButton = "pending";
-    else if (bt_id == 1) _selectedButton = "resolved";
+      filteredRequests = requestsList
+          .where((element) => element.serviceStatus == "pending")
+          .toList();
+    } else if (bt_id == 1) {
+      _selectedButton = "resolved";
+      filteredRequests = requestsList
+          .where((element) => element.serviceStatus == "resolved")
+          .toList();
+    }
 
     // getServices(_selectedButton);
   }
@@ -256,10 +271,21 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                     );
                     return ServiceListView(
                       callback: () {
+                        //path serviceName to newRequest
                         Navigator.push<dynamic>(
                           context,
                           MaterialPageRoute<dynamic>(
-                            builder: (BuildContext context) => NewRequest(),
+                            builder: (BuildContext context) => NewRequest(
+                              // Assuming you have a NewRequest widget
+                              serviceName: servicesList[index].serviceName,
+                              onNewRequestAdded: (newRequest) {
+                                setState(() {
+                                  filteredRequests.add(newRequest);
+                                });
+                              },
+                              //to add to list after last index
+                              listIndex: filteredRequests.length,
+                            ),
                           ),
                         );
                       },
@@ -282,11 +308,13 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                         )
                       : Column(
                           children: [
-                            SizedBox(height: 20),
+                            SizedBox(height: 10),
                             Center(
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
                                   children: [
                                     FillableOutlinedButton(
                                       text: getTranslated(context, "pending")!,
@@ -314,7 +342,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                             Expanded(
                               child: RefreshIndicator(
                                 onRefresh: _refreshData,
-                                child: requestsList.isEmpty
+                                child: filteredRequests.isEmpty
                                     ? Center(
                                         child: Text(
                                           getTranslated(context, "noRequests")!,
@@ -329,7 +357,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                                         ),
                                       )
                                     : ListView.builder(
-                                        itemCount: requestsList.length,
+                                        itemCount: filteredRequests.length,
                                         itemBuilder: (context, index) {
                                           return _buildRequestListItem(
                                               context, index, _selectedButton);
@@ -389,15 +417,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                   child: TextField(
                     onChanged: (String txt) {
                       setState(() {
-                        // servicesList = FeedListData.hotelList
-                        //     .where((element) =>
-                        // element.titleTxt
-                        //     .toLowerCase()
-                        //     .contains(txt.toLowerCase()) ||
-                        //     element.postText
-                        //         .toLowerCase()
-                        //         .contains(txt.toLowerCase()))
-                        //     .toList();
+                        filterServices(txt);
                       });
                     },
                     style: const TextStyle(
@@ -406,63 +426,54 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
                     cursorColor: AppTheme.buildLightTheme().primaryColor,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Parking...',
+                      hintText: 'Search...',
                     ),
                   ),
                 ),
               ),
             ),
           ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: AppTheme.buildLightTheme().primaryColor,
-          //     borderRadius: const BorderRadius.all(
-          //       Radius.circular(38.0),
-          //     ),
-          //     boxShadow: <BoxShadow>[
-          //       BoxShadow(
-          //           color: Colors.grey.withOpacity(0.4),
-          //           offset: const Offset(0, 2),
-          //           blurRadius: 8.0),
-          //     ],
-          //   ),
-          //   child: Material(
-          //     color: Colors.transparent,
-          //     child: InkWell(
-          //       borderRadius: const BorderRadius.all(
-          //         Radius.circular(32.0),
-          //       ),
-          //       onTap: () {
-          //         FocusScope.of(context).requestFocus(FocusNode());
-          //       },
-          //       child: Padding(
-          //         padding: const EdgeInsets.all(16.0),
-          //         child: Icon(FontAwesomeIcons.magnifyingGlass,
-          //             size: 20,
-          //             color: AppTheme.buildLightTheme().backgroundColor),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
   }
 
-  Widget _buildRequestListItem(BuildContext context, int index, String status) {
-    List<OneService> statusRequests = [];
-      statusRequests = requestsList
-          .where((element) => element.serviceStatus == status)
-          .toList();
+  String formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-${date.month.toString()
+        .padLeft(2, '0')}-${date.year}";
+  }
 
+  Widget _buildRequestListItem(BuildContext context, int index, String status) {
     return InkWell(
       onTap: () {
-        // Navigate to service details passing service id
-        Navigator.pushNamed(
-          context,
-          RequestDetails.routeName,
-          arguments: requestsList[index].serviceId,
-        );
+        if (filteredRequests[index].serviceStatus == "resolved") {
+          // showToast(getTranslated(context, "requestResolved")!);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                getTranslated(context, "requestResolved")!,
+                style: TextStyle(
+                  fontFamily: _getCurrentLang() == "ar"
+                      ? 'arFont'
+                      : 'enBold',
+                ),
+              ),
+            ),
+          );
+          return;
+        }else
+          Navigator.push<dynamic>(
+            context,
+            MaterialPageRoute<dynamic>(
+              builder: (BuildContext context) => RequestDetails(
+                requestId: filteredRequests[index].serviceId,
+                serviceType: filteredRequests[index].serviceTitle,
+                serviceDesc: filteredRequests[index].serviceDescription,
+                // dateTime: formatDate(filteredRequests[index].serviceDateTime),
+                dateTime: filteredRequests[index].serviceDateTime,
+              ),
+            ),
+          );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -486,7 +497,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                requestsList[index].serviceDateTime,
+                filteredRequests[index].serviceDateTime,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
@@ -497,7 +508,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
             ),
             SizedBox(height: 8), // Add some vertical spacing
             Text(
-              requestsList[index].serviceTitle,
+              filteredRequests[index].serviceTitle,
               style: TextStyle(
                 fontSize: 17,
                 color: Colors.black,
@@ -507,7 +518,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
             ),
             SizedBox(height: 8), // Add some vertical spacing
             Text(
-              requestsList[index].serviceDescription,
+              filteredRequests[index].serviceDescription,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
@@ -519,7 +530,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                requestsList[index].serviceStatus,
+                filteredRequests[index].serviceStatus,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.black,
@@ -537,6 +548,19 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
   void _updateButtonState(int index) {
     setState(() {
       buttonStates = List.generate(2, (i) => i == index);
+      if (index == 0) {
+        _selectedButton = "pending";
+        filteredRequests = requestsList
+            .where((element) => element.serviceStatus == "pending")
+            .toList();
+        dev.log(TAG,
+            name: "updatebutton:: ", error: requestsList.length.toString());
+      } else {
+        _selectedButton = "resolved";
+        filteredRequests = requestsList
+            .where((element) => element.serviceStatus == "resolved")
+            .toList();
+      }
     });
   }
 
@@ -582,7 +606,44 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
 
   void filterServices(String query) {
     setState(() {
-      //loop through all services list to search for the query
+      if (query.isEmpty) {
+        filteredRequests = requestsList
+            .where((element) => element.serviceStatus == _selectedButton)
+            .toList();
+        return;
+      } else {
+        if (_selectedButton == "pending") {
+          filteredRequests = requestsList
+              .where((service) =>
+                  (service.serviceTitle
+                          .toLowerCase()
+                          .contains(query.toLowerCase()) ||
+                      service.serviceDescription
+                          .toLowerCase()
+                          .contains(query.toLowerCase()) ||
+                      service.serviceDateTime
+                          .toLowerCase()
+                          .contains(query.toLowerCase())) &&
+                  service.serviceStatus.toLowerCase() ==
+                      "pending") // Additional check for pending status
+              .toList();
+        } else {
+          filteredRequests = requestsList
+              .where((service) =>
+                  (service.serviceTitle
+                          .toLowerCase()
+                          .contains(query.toLowerCase()) ||
+                      service.serviceDescription
+                          .toLowerCase()
+                          .contains(query.toLowerCase()) ||
+                      service.serviceDateTime
+                          .toLowerCase()
+                          .contains(query.toLowerCase())) &&
+                  service.serviceStatus.toLowerCase() ==
+                      "resolved") // Additional check for pending status
+              .toList();
+        }
+      }
     });
   }
 
@@ -593,6 +654,7 @@ class SupportState extends State<Support> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 500), vsync: this);
     animationController?.forward();
 
+    _fillFilteredRequestsList();
     super.initState();
   }
 

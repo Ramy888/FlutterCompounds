@@ -111,7 +111,7 @@ class _FeedScreenState extends State<FeedScreen> with TickerProviderStateMixin {
                                     context,
                                     MaterialPageRoute<dynamic>(
                                       builder: (BuildContext context) =>
-                                          FeedDetails(itemId: hotelList[index].id,),
+                                          FeedDetails(itemId: hotelList[index].id, feedItem: hotelList[index]),
                                     ),
                                   );
                                 },

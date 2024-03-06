@@ -22,6 +22,7 @@ import 'package:pyramids_developments/screens/qrcode_page.dart';
 import 'package:pyramids_developments/screens/Serivces/support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Models/User.dart';
+import 'Models/model_service.dart';
 import 'login_page.dart';
 import 'register_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -169,10 +170,22 @@ class _MyAppState extends State<MyApp> {
         //request page route
         Support.routeName: (context) => const Support(title: "Request"),
         //request details page route
-         RequestDetails.routeName: (context) =>  RequestDetails(requestId: "0",),
+        RequestDetails.routeName: (context) => RequestDetails(
+              requestId: "0",
+              serviceType: "Request Details",
+              serviceDesc: "",
+              dateTime: "",
+            ),
         //new request page route
-         NewRequest.routeName: (context) => const NewRequest(),
-        //account page route
+        NewRequest.routeName: (context) => NewRequest(
+              serviceName: "New Request",
+              onNewRequestAdded: (OneService newRequest) {
+                // Implement what should happen when a new request is added.
+                // Since you're not showing what needs to be done here,
+                // you'll need to fill this in as needed.
+              },
+              listIndex: -1,
+            ), //account page route
         AccountPage.routeName: (context) => const AccountPage(title: "Account"),
         //gate permission page route
         GatePermission.routeName: (context) => GatePermission(),
@@ -246,10 +259,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   static const String TAG = "SplashScreen";
-  //AnimationController? _animationController;
 
+  //AnimationController? _animationController;
 
   Future<bool> getUserStateFromPreferences() async {
     bool isLogged = false;
@@ -290,8 +302,8 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       } else
         // Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
-        Navigator.of(context).pushReplacementNamed(IntroductionAnimationScreen.routeName);
-        
+        Navigator.of(context)
+            .pushReplacementNamed(IntroductionAnimationScreen.routeName);
     });
 
     return Scaffold(

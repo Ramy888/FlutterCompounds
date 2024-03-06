@@ -4,11 +4,16 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pyramids_developments/app_theme.dart';
 import 'package:pyramids_developments/widgets/ripple_effect.dart';
 
+import 'feed_list_data.dart';
+
 class FeedDetails extends StatefulWidget {
-  FeedDetails({required this.itemId});
+
+  FeedDetails({required this.itemId, required this.feedItem});
 
   //receive item id from the previous screen
   final String itemId;
+  final FeedListData feedItem;
+
 
   @override
   _FeedDetailsState createState() => _FeedDetailsState();
@@ -88,7 +93,7 @@ class _FeedDetailsState extends State<FeedDetails>
                 children: <Widget>[
                   AspectRatio(
                     aspectRatio: 1.2,
-                    child: Image.asset('assets/design_course/webInterFace.png'),
+                    child: Image.asset(widget.feedItem.imagePath),
                   ),
                 ],
               ),
@@ -127,7 +132,7 @@ class _FeedDetailsState extends State<FeedDetails>
                                     AssetImage('assets/images/userImage.png'),
                               ),
                               SizedBox(width: 16),
-                              Text('User Name',
+                              Text(widget.feedItem.userName,
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -138,7 +143,7 @@ class _FeedDetailsState extends State<FeedDetails>
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
+                            widget.feedItem.postText,
                             textAlign: TextAlign.justify,
                             style: TextStyle(
                               fontWeight: FontWeight.w200,
@@ -169,7 +174,7 @@ class _FeedDetailsState extends State<FeedDetails>
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
-                                        rating.toString(),
+                                        widget.feedItem.rating.toString(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontWeight: FontWeight.w200,
@@ -428,7 +433,7 @@ class _FeedDetailsState extends State<FeedDetails>
         return AlertDialog(
           title: Text('Rate'),
           content: RatingBar.builder(
-            initialRating: rating,
+            initialRating: widget.feedItem.rating,
             minRating: 1,
             direction: Axis.horizontal,
             allowHalfRating: true,
@@ -439,7 +444,7 @@ class _FeedDetailsState extends State<FeedDetails>
               color: AppTheme.nearlyBlue,
             ),
             onRatingUpdate: (rating) {
-              this.rating = rating;
+              this.widget.feedItem.rating = rating;
             },
           ),
           actions: <Widget>[
@@ -454,7 +459,7 @@ class _FeedDetailsState extends State<FeedDetails>
               onPressed: () {
                 // rate
                 setState(() {
-                  rating = rating;
+                  widget.feedItem.rating = rating;
                 });
                 Navigator.of(context).pop();
               },

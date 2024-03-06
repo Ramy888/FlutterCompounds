@@ -16,7 +16,12 @@ import '../../widgets/Loading_dialog.dart';
 class RequestDetails extends StatefulWidget {
   //accept the request id from the previous screen
   final String requestId;
-  const RequestDetails({Key? key, required this.requestId}) : super(key: key);
+  final String serviceType ;
+  final String serviceDesc ;
+  final String dateTime ;
+
+  const RequestDetails({Key? key, required this.requestId,
+    required this.serviceType,  required this.serviceDesc, required this.dateTime}) : super(key: key);
 
   static const routeName = 'support/request-details';
 
@@ -105,10 +110,10 @@ class _RequestDetailsState extends State<RequestDetails> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/splash/white_bg.png'),
-            fit: BoxFit.cover,
-          ),
+          // image: DecorationImage(
+          //   image: AssetImage('assets/splash/white_bg.png'),
+          //   fit: BoxFit.cover,
+          // ),
         ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -126,13 +131,13 @@ class _RequestDetailsState extends State<RequestDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Type: Plumbing',
+                      widget.serviceType,
                       style: TextStyle(
                           fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10.0),
                     Text(
-                      'Description: There is a leak in the kitchen sink that needs to be fixed.',
+                      widget.serviceDesc,
                       style: TextStyle(fontSize: 16.0),
                     ),
                     SizedBox(height: 10.0),
@@ -140,12 +145,7 @@ class _RequestDetailsState extends State<RequestDetails> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          'Date: 2023-01-01',
-                          style: TextStyle(fontSize: 16.0),
-                        ),
-                        SizedBox(width: 10.0),
-                        Text(
-                          'Time: 10:00 AM',
+                          widget.dateTime,
                           style: TextStyle(fontSize: 16.0),
                         ),
                       ],
