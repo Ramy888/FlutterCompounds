@@ -15,7 +15,7 @@ import 'dart:developer' as dev;
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
 
-  static const String routeName = '/notifications'; // Define a route name
+  static const String routeName = 'main/notifications'; // Define a route name
 
 
   @override

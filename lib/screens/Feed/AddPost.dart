@@ -11,7 +11,16 @@ import '../../localization/language_constants.dart';
 import '../../widgets/ripple_effect.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'feed_list_data.dart';
+
 class AddPost extends StatefulWidget {
+  final int listIndex;
+  final Function(FeedListData) onNewPostAdded;
+
+  const AddPost({Key? key,
+    required this.onNewPostAdded, required this.listIndex}) : super(key: key);
+
+
   @override
   _AddPostState createState() => _AddPostState();
 }
@@ -24,6 +33,7 @@ class _AddPostState extends State<AddPost> {
   ];
   String? photoPath = null;
   String usrName = 'User Name';
+  String postContent = '';
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +148,10 @@ class _AddPostState extends State<AddPost> {
                     border: OutlineInputBorder(),
                     labelText: 'Post Content',
                   ),
+                  onChanged: (value) {
+                    // Update post content
+                    postContent = value;
+                  },
                 ),
               ),
               Padding(
@@ -145,6 +159,21 @@ class _AddPostState extends State<AddPost> {
                 child: GestureDetector(
                   onTap: () {
                     // Add post to database
+                    FeedListData feedListData = FeedListData(
+                      id: widget.listIndex.toString(),
+                      imagePath: 'assets/hotel/hotel_1.png',
+                      titleTxt: usrName,
+                      postText: postContent,
+                      dist: 7.0,
+                      reviews: 90,
+                      rating: 4.4,
+                      perNight: 170,
+                      userName: usrName,
+                      userImage: 'assets/userImage/userImage.jpg',
+                      date: formatDate(DateTime.now()),
+                      postType: postType,
+                    );
+                    widget.onNewPostAdded(feedListData);
                   },
                   child: Container(
                     height: 50,
@@ -260,6 +289,8 @@ class _AddPostState extends State<AddPost> {
     }
   }
 
+
+
   void showDialogPermissionRequired() {
     showDialog(
       context: context,
@@ -317,5 +348,10 @@ class _AddPostState extends State<AddPost> {
       // Handle the case where the user did not select a photo
       showToast(getTranslated(context, "noPhotoSelected")!);
     }
+  }
+
+  String formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-${date.month.toString()
+        .padLeft(2, '0')}-${date.year}";
   }
 }

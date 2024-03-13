@@ -4,6 +4,7 @@ import 'package:pyramids_developments/Helpers/ImageHelper.dart';
 import 'package:pyramids_developments/Models/User.dart';
 import 'package:pyramids_developments/Models/units.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
+import 'package:pyramids_developments/widgets/Button/gradient_button.dart';
 import 'login_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -368,7 +369,8 @@ class RegisterPageState extends State<RegisterPage> {
       var _compressedImage = await ImageHelper.compress(image: image);
       final _sizeInKbAfter = _compressedImage.lengthSync() / 1024;
       print('After Compress $_sizeInKbAfter kb');
-      var _croppedImage = await ImageHelper.cropImage(_compressedImage, context);
+      var _croppedImage =
+          await ImageHelper.cropImage(_compressedImage, context);
       if (_croppedImage == null) {
         return;
       }
@@ -454,11 +456,11 @@ class RegisterPageState extends State<RegisterPage> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               // Add background image here
-              image: DecorationImage(
-                image: AssetImage('assets/splash/white_bg.png'),
-                // Replace with your image asset
-                fit: BoxFit.cover,
-              ),
+              // image: DecorationImage(
+              //   image: AssetImage('assets/splash/white_bg.png'),
+              //   // Replace with your image asset
+              //   fit: BoxFit.cover,
+              // ),
             ),
           ),
           isGettingUnits
@@ -524,6 +526,10 @@ class RegisterPageState extends State<RegisterPage> {
                                             ? 'arFont'
                                             : 'enBold')),
                               ),
+                              // GradientButton(
+                              //   onPressed: details.onStepContinue,
+                              //   text: getTranslated(context, "next")!,
+                              // ),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.purple,

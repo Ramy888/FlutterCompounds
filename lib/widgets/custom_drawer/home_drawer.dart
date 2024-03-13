@@ -35,7 +35,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
       DrawerList(
         index: DrawerIndex.MyQRCode,
         labelName: 'My QR Code',
-        isAssetsImage: true,
+        isAssetsImage: false,
         // imageName: 'assets/bottomBar/icon2.png',
         icon: Icon(Icons.qr_code),
       ),
@@ -175,7 +175,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 },
               ),
               SizedBox(
-                height: MediaQuery.of(context).padding.bottom,
+                height: MediaQuery.of(context).padding.bottom + 25,
               )
             ],
           ),

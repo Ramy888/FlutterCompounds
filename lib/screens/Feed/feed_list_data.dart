@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:flutter/painting.dart';
+
 class FeedListData {
   FeedListData({
     this.id = '',
@@ -30,7 +33,7 @@ class FeedListData {
   static List<FeedListData> hotelList = <FeedListData>[
     FeedListData(
       id: '1',
-      imagePath: 'assets/hotel/hotel_1.png',
+      imagePath: ('assets/hotel/hotel_1.png'),
       titleTxt: 'Grand Royal Hotel',
       postText: 'problem in the road to building number 243',
       dist: 2.0,
@@ -44,7 +47,7 @@ class FeedListData {
     ),
     FeedListData(
       id: '2',
-      imagePath: 'assets/hotel/hotel_2.png',
+      imagePath: ('assets/hotel/hotel_2.png'),
       titleTxt: 'Queen Hotel',
       postText: 'Wembley, London',
       dist: 4.0,
@@ -58,7 +61,7 @@ class FeedListData {
     ),
     FeedListData(
       id: '3',
-      imagePath: 'assets/hotel/hotel_3.png',
+      imagePath: ('assets/hotel/hotel_3.png'),
       titleTxt: 'Grand Royal Hotel',
       postText: 'Wembley, London',
       dist: 3.0,
@@ -72,7 +75,7 @@ class FeedListData {
     ),
     FeedListData(
       id: '4',
-      imagePath: 'assets/hotel/hotel_4.png',
+      imagePath: ('assets/hotel/hotel_4.png'),
       titleTxt: 'Queen Hotel',
       postText: 'Wembley, London',
       dist: 7.0,
@@ -86,7 +89,7 @@ class FeedListData {
     ),
     FeedListData(
       id: '5',
-      imagePath: 'assets/hotel/hotel_5.png',
+      imagePath: ('assets/hotel/hotel_5.png'),
       titleTxt: 'Grand Royal Hotel',
       postText: 'Wembley, London',
       dist: 2.0,

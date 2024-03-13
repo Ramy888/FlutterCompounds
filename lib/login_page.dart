@@ -6,6 +6,7 @@ import 'package:pyramids_developments/Models/User.dart';
 import 'package:pyramids_developments/login_with_code.dart';
 import 'package:pyramids_developments/reset_password.dart';
 import 'package:pyramids_developments/screens/main_page.dart';
+import 'package:pyramids_developments/widgets/Button/gradient_button.dart';
 import 'package:pyramids_developments/widgets/ripple_effect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -61,7 +62,9 @@ class LoginPageState extends State<LoginPage> {
           }),
         );
 
-        dev.log(TAG, name: "acceptedData// ", error: "$phone, $pass, $device_id, $currentLang");
+        dev.log(TAG,
+            name: "acceptedData// ",
+            error: "$phone, $pass, $device_id, $currentLang");
 
         if (response.statusCode == 200) {
           setState(() {
@@ -73,7 +76,6 @@ class LoginPageState extends State<LoginPage> {
               User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
           if (theUser.status == "OK") {
             saveUserInPreferences(theUser);
-
           } else {
             dev.log(TAG, error: "login API status Error: " + response.body);
             showToast(theUser.info);
@@ -134,7 +136,8 @@ class LoginPageState extends State<LoginPage> {
       String id = User.fromMap(userJson).userId;
       if (id.isNotEmpty) {
         isLogged = prefs.getBool("isLogin")!;
-        dev.log(TAG, name: "getUserStateFromPreferences", error: isLogged.toString());
+        dev.log(TAG,
+            name: "getUserStateFromPreferences", error: isLogged.toString());
         return isLogged;
       }
     }
@@ -193,13 +196,13 @@ class LoginPageState extends State<LoginPage> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
-          // Add background image here
-          image: DecorationImage(
-            image: AssetImage('assets/splash/white_bg.png'),
-            // Replace with your image asset
-            fit: BoxFit.cover,
-          ),
-        ),
+            // Add background image here
+            // image: DecorationImage(
+            //   image: AssetImage('assets/splash/white_bg.png'),
+            //   // Replace with your image asset
+            //   fit: BoxFit.cover,
+            // ),
+            ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
@@ -406,8 +409,8 @@ class LoginPageState extends State<LoginPage> {
                         width: 30,
                         height: 30,
                         child: CircularProgressIndicator())
-                    : RippleInkWell(
-                        onTap: () {
+                    : GradientButton(
+                        onPressed: () {
                           if (_userNamecontroller.text.isEmpty ||
                               !isValidPhoneNumber(_userNamecontroller.text)) {
                             showToast(
@@ -421,30 +424,7 @@ class LoginPageState extends State<LoginPage> {
                                 _userNamecontroller.text, _passController.text);
                           }
                         },
-                        child: Container(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width * 1.3,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/button/button_bg.png"),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Center(
-                            child: Text(
-                              getTranslated(context, 'login')!,
-                              style: TextStyle(
-                                fontFamily: _getCurrentLang() == 'ar'
-                                    ? 'arFont'
-                                    : 'enBold',
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                        ),
+                        text: getTranslated(context, 'login')!,
                       ),
 
                 // Register
@@ -525,10 +505,8 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-
     super.initState();
     //initialization();
-
   }
 
   // void initialization() async {
@@ -568,6 +546,4 @@ class LoginPageState extends State<LoginPage> {
   String _getCurrentLang() {
     return Localizations.localeOf(context).languageCode;
   }
-
-
 }

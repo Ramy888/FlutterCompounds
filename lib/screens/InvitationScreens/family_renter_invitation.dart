@@ -8,10 +8,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:pyramids_developments/widgets/Button/gradient_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/User.dart';
 import '../../Models/family_renter_model.dart';
+import '../../app_theme.dart';
 import '../../widgets/Loading_dialog.dart';
 
 class FamilyRenter extends StatefulWidget {
@@ -38,7 +40,6 @@ class _FamilyRenterState extends State<FamilyRenter> {
   String email = "";
   String role = "";
   bool isLogged = false;
-
 
   TextEditingController fromDateController = TextEditingController();
   TextEditingController toDateController = TextEditingController();
@@ -97,335 +98,375 @@ class _FamilyRenterState extends State<FamilyRenter> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(getTranslated(context, "new")! + ' ' + capitalizeFirstLetter(widget.type) + ' ' + getTranslated(context, "invitation")!,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: _getCurrentLang() == "ar"
-                      ? 'arFont'
-                      : 'enBold',
-                ),
-            ),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/splash/white_bg.png'),
-              // Replace with your image asset
-              fit: BoxFit.cover,
-            ),
+        title: Text(
+          getTranslated(context, "new")! +
+              ' ' +
+              capitalizeFirstLetter(widget.type) +
+              ' ' +
+              getTranslated(context, "invitation")!,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+            fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: Colors.grey[200],
-                  ),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      labelText: getTranslated(context, "guestName"),
-                      hintText: getTranslated(context, "enterGuestName"),
-                      labelStyle:
-                           TextStyle(color: Colors.black, fontSize: 14.0,
-                             fontFamily: _getCurrentLang() == "ar"
-                                ? 'arFont'
-                                : 'enBold',
-                           ),
-                      hintStyle:
-                          TextStyle(color: Colors.grey, fontSize: 13.0,
-                            fontFamily: _getCurrentLang() == "ar"
-                                ? 'arFont'
-                                : 'enBold',
-                          ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      // Add your onChanged logic here
-                      if (value.isEmpty) {
-                        // Input field to show error
-                        setState(() {
-                          guestNameError =
-                              getTranslated(context, "notValidName")!; // Customize the error message
-                        });
-                      } else {
-                        setState(() {
-                          guestNameError = "";
-                          guestName = value;
-                        });
-                      }
-                    },
-                  ),
+        ),
+      ),
+      body: Theme(
+        data: AppTheme.buildLightTheme(),
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                // image: DecorationImage(
+                //   image: AssetImage('assets/splash/white_bg.png'),
+                //   // Replace with your image asset
+                //   fit: BoxFit.cover,
+                // ),
                 ),
-                Text(
-                  guestNameError,
-                  style:  TextStyle(
-                    color: Colors.red,
-                    fontSize: 12.0,
-                    fontFamily: _getCurrentLang() == "ar"
-                        ? 'arFont'
-                        : 'enBold',
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: Colors.grey[200],
-                  ),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      labelText: getTranslated(context, "desc"),
-                      hintText: getTranslated(context, "enterDesc"),
-                      labelStyle:  TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontFamily: _getCurrentLang() == "ar"
-                            ? 'arFont'
-                            : 'enBold',
-                      ),
-                      hintStyle:
-                           TextStyle(color: Colors.grey, fontSize: 13.0,
-                             fontFamily: _getCurrentLang() == "ar"
-                                ? 'arFont'
-                                : 'enBold',
-                           ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                    maxLines: 5,
-                    onChanged: (value) {
-                      // Add your onChanged logic here
-                      if (value.isEmpty) {
-                        // Input field to show error
-                        setState(() {
-                          descError =
-                              getTranslated(context, "notValidDesc")!; // Customize the error message
-                        });
-                      } else {
-                        setState(() {
-                          descError = "";
-                          desc = value;
-                        });
-                      }
-                    },
-                  ),
-                ),
-                Text(
-                  descError,
-                  style:  TextStyle(
-                    color: Colors.red,
-                    fontSize: 12.0,
-                    fontFamily: _getCurrentLang() == "ar"
-                        ? 'arFont'
-                        : 'enBold',
-                  ),
-                ),
-                Visibility(
-                  visible: widget.type != getTranslated(context, "family"),
-                  // Set visibility based on the condition
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 5, right: 5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        InkWell(
-                          onTap: () => _selectFromDate(context),
-                          splashColor: Colors.black,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(
-                                color: Colors.black,
-                                // Add your desired border color
-                                width: 1.0, // Add your desired border width
-                              ),
-                              color: Colors.grey[200],
-                            ),
-                            child: TextFormField(
-                              controller: fromDateController,
-                              decoration: InputDecoration(
-                                labelText: getTranslated(context, "visitFrom"),
-                                hintText: getTranslated(context, "enterDateFrom"),
-                                hintStyle: TextStyle(color: Colors.black,
-                                fontFamily: _getCurrentLang() == "ar"
-                                    ? 'arFont'
-                                    : 'enBold',
-                                ),
-                                // labelStyle: TextStyle(color: Colors.black),
-                              ),
-                              enabled: false,
-                              onChanged: (value) {
-                                if (value.isEmpty) {
-                                  // Input field to show error
-                                  setState(() {
-                                    fromError =
-                                        getTranslated(context, "notValidDate")!; // Customize the error message
-                                  });
-                                } else {
-                                  setState(() {
-                                    fromError = "";
-                                    //dateFrom = value;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                        Text(
-                          fromError,
-                          style:  TextStyle(
-                            color: Colors.red,
-                            fontSize: 12.0,
-                            fontFamily: _getCurrentLang() == "ar"
-                                ? 'arFont'
-                                : 'enBold',
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        InkWell(
-                          onTap: () => _selectToDate(context),
-                          splashColor: Colors.black,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            decoration: BoxDecoration(
-                              // Add background image here
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(
-                                color: Colors.black,
-                                // Add your desired border color
-                                width: 1.0, // Add your desired border width
-                              ),
-                              color: Colors.grey[200],
-                            ),
-                            child: TextFormField(
-                              controller: toDateController,
-                              decoration: InputDecoration(
-                                labelText: getTranslated(context, "visitTo"),
-                                hintText: getTranslated(context, "enterDateTo"),
-                              ),
-                              enabled: false,
-                              onChanged: (value) {
-                                // Add your onChanged logic here
-                                if (value.isEmpty) {
-                                  // Input field to show error
-                                  setState(() {
-                                    toError =
-                                        getTranslated(context, "notValidDate")!; // Customize the error message
-                                  });
-                                } else {
-                                  setState(() {
-                                    toError = "";
-                                    //dateTo = value;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                        Text(
-                          toError,
-                          style:  TextStyle(
-                            color: Colors.red,
-                            fontSize: 12.0,
-                            fontFamily: _getCurrentLang() == "ar"
-                                ? 'arFont'
-                                : 'enBold',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 60,
-                ),
-                //button with background image
-                InkWell(
-                  borderRadius: BorderRadius.circular(25),
-                  onTap: () {
-                    if (guestName.isEmpty) {
-                      setState(() {
-                        guestNameError = getTranslated(context, "notValidName")!;
-                      });
-                    } else if (desc.isEmpty) {
-                      setState(() {
-                        descError = getTranslated(context, "notValidDesc")!;
-                      });
-                    } else {
-                      //creating renter invitation
-                      if (widget.type != getTranslated(context, "family")) {
-                        if (dateFrom.isEmpty) {
-                          setState(() {
-                            fromError = getTranslated(context, "notValidDate")!;
-                          });
-
-                        } else if (dateTo.isEmpty) {
-                          setState(() {
-                            toError = getTranslated(context, "notValidDate")!;
-                          });
-
-                        }else
-                          createFamilyPermission();
-                        //creating family invitation
-                      }else
-                        createFamilyPermission();
-                    }
-                  },
-                  child: Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width * 0.8,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Container(
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/button/button_bg.png"),
-                        fit: BoxFit.cover,
-                      ),
                       borderRadius: BorderRadius.circular(25),
+                      color: Colors.grey[200],
                     ),
-                    child: Center(
-                      child: Text(
-                        getTranslated(context, 'save')!,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: _getCurrentLang() == "ar"
-                              ? 'arFont'
-                              : 'enBold',
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: getTranslated(context, "guestName"),
+                        hintText: getTranslated(context, "enterGuestName"),
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
                         ),
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13.0,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        // Add your onChanged logic here
+                        if (value.isEmpty) {
+                          // Input field to show error
+                          setState(() {
+                            guestNameError = getTranslated(context,
+                                "notValidName")!; // Customize the error message
+                          });
+                        } else {
+                          setState(() {
+                            guestNameError = "";
+                            guestName = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  Text(
+                    guestNameError,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 12.0,
+                      fontFamily:
+                          _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: Colors.grey[200],
+                    ),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: getTranslated(context, "desc"),
+                        hintText: getTranslated(context, "enterDesc"),
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                        ),
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13.0,
+                          fontFamily:
+                              _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                      maxLines: 5,
+                      onChanged: (value) {
+                        // Add your onChanged logic here
+                        if (value.isEmpty) {
+                          // Input field to show error
+                          setState(() {
+                            descError = getTranslated(context,
+                                "notValidDesc")!; // Customize the error message
+                          });
+                        } else {
+                          setState(() {
+                            descError = "";
+                            desc = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  Text(
+                    descError,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 12.0,
+                      fontFamily:
+                          _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.type != getTranslated(context, "family"),
+                    // Set visibility based on the condition
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          InkWell(
+                            onTap: () => _selectFromDate(context),
+                            splashColor: Colors.black,
+                            child: Container(
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  // Add your desired border color
+                                  width: 1.0, // Add your desired border width
+                                ),
+                                color: Colors.grey[200],
+                              ),
+                              child: TextFormField(
+                                controller: fromDateController,
+                                decoration: InputDecoration(
+                                  labelText:
+                                      getTranslated(context, "visitFrom"),
+                                  hintText:
+                                      getTranslated(context, "enterDateFrom"),
+                                  hintStyle: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: _getCurrentLang() == "ar"
+                                        ? 'arFont'
+                                        : 'enBold',
+                                  ),
+                                  // labelStyle: TextStyle(color: Colors.black),
+                                ),
+                                enabled: false,
+                                onChanged: (value) {
+                                  if (value.isEmpty) {
+                                    // Input field to show error
+                                    setState(() {
+                                      fromError = getTranslated(context,
+                                          "notValidDate")!; // Customize the error message
+                                    });
+                                  } else {
+                                    setState(() {
+                                      fromError = "";
+                                      //dateFrom = value;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Text(
+                            fromError,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 12.0,
+                              fontFamily: _getCurrentLang() == "ar"
+                                  ? 'arFont'
+                                  : 'enBold',
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          InkWell(
+                            onTap: () => _selectToDate(context),
+                            splashColor: Colors.black,
+                            child: Container(
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                // Add background image here
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  // Add your desired border color
+                                  width: 1.0, // Add your desired border width
+                                ),
+                                color: Colors.grey[200],
+                              ),
+                              child: TextFormField(
+                                controller: toDateController,
+                                decoration: InputDecoration(
+                                  labelText: getTranslated(context, "visitTo"),
+                                  hintText:
+                                      getTranslated(context, "enterDateTo"),
+                                ),
+                                enabled: false,
+                                onChanged: (value) {
+                                  // Add your onChanged logic here
+                                  if (value.isEmpty) {
+                                    // Input field to show error
+                                    setState(() {
+                                      toError = getTranslated(context,
+                                          "notValidDate")!; // Customize the error message
+                                    });
+                                  } else {
+                                    setState(() {
+                                      toError = "";
+                                      //dateTo = value;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Text(
+                            toError,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 12.0,
+                              fontFamily: _getCurrentLang() == "ar"
+                                  ? 'arFont'
+                                  : 'enBold',
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: 60,
+                  ),
+                  //button with background image
+                  GradientButton(
+                      text: getTranslated(context, 'save')!,
+                      onPressed: () {
+                        if (guestName.isEmpty) {
+                          setState(() {
+                            guestNameError =
+                                getTranslated(context, "notValidName")!;
+                          });
+                        } else if (desc.isEmpty) {
+                          setState(() {
+                            descError = getTranslated(context, "notValidDesc")!;
+                          });
+                        } else {
+                          //creating renter invitation
+                          if (widget.type != getTranslated(context, "family")) {
+                            if (dateFrom.isEmpty) {
+                              setState(() {
+                                fromError =
+                                    getTranslated(context, "notValidDate")!;
+                              });
+                            } else if (dateTo.isEmpty) {
+                              setState(() {
+                                toError =
+                                    getTranslated(context, "notValidDate")!;
+                              });
+                            } else
+                              createFamilyPermission();
+                            //creating family invitation
+                          } else
+                            createFamilyPermission();
+                        }
+                      })
+                  // InkWell(
+                  //   borderRadius: BorderRadius.circular(25),
+                  //   onTap: () {
+                  //     if (guestName.isEmpty) {
+                  //       setState(() {
+                  //         guestNameError = getTranslated(
+                  //             context, "notValidName")!;
+                  //       });
+                  //     } else if (desc.isEmpty) {
+                  //       setState(() {
+                  //         descError = getTranslated(context, "notValidDesc")!;
+                  //       });
+                  //     } else {
+                  //       //creating renter invitation
+                  //       if (widget.type != getTranslated(context, "family")) {
+                  //         if (dateFrom.isEmpty) {
+                  //           setState(() {
+                  //             fromError = getTranslated(context, "notValidDate")!;
+                  //           });
+                  //         } else if (dateTo.isEmpty) {
+                  //           setState(() {
+                  //             toError = getTranslated(context, "notValidDate")!;
+                  //           });
+                  //         } else
+                  //           createFamilyPermission();
+                  //         //creating family invitation
+                  //       } else
+                  //         createFamilyPermission();
+                  //     }
+                  //   },
+                  //   child: Container(
+                  //     height: 50,
+                  //     width: MediaQuery
+                  //         .of(context)
+                  //         .size
+                  //         .width * 0.8,
+                  //     decoration: BoxDecoration(
+                  //       image: DecorationImage(
+                  //         image: AssetImage("assets/button/button_bg.png"),
+                  //         fit: BoxFit.cover,
+                  //       ),
+                  //       borderRadius: BorderRadius.circular(25),
+                  //     ),
+                  //     child: Center(
+                  //       child: Text(
+                  //         getTranslated(context, 'save')!,
+                  //         style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 16,
+                  //           fontFamily: _getCurrentLang() == "ar"
+                  //               ? 'arFont'
+                  //               : 'enBold',
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
           ),
         ),
@@ -443,7 +484,8 @@ class _FamilyRenterState extends State<FamilyRenter> {
 
       LoadingDialog.show(context);
 
-      String type = widget.type == getTranslated(context, "family") ? "family" : "renter";
+      String type =
+          widget.type == getTranslated(context, "family") ? "family" : "renter";
 
       try {
         final response = await http.post(
@@ -514,7 +556,6 @@ class _FamilyRenterState extends State<FamilyRenter> {
       fontSize: 16.0, // Text font size
     );
   }
-
 
   Future<bool> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();

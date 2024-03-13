@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:developer' as dev;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pyramids_developments/widgets/Button/gradient_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/User.dart';
@@ -174,9 +175,8 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                   height: 60,
                 ),
                 //button with background image
-                InkWell(
-                  borderRadius: BorderRadius.circular(25),
-                  onTap: () {
+                GradientButton(
+                  onPressed: () {
                     if (guestName.isEmpty) {
                       setState(() {
                         guestNameError = getTranslated(context, "notValidName")!;
@@ -188,28 +188,44 @@ class _OneTimePermissionState extends State<OneTimePermission> {
                     } else
                       createOneTimePermission();
                   },
-                  child: Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/button/button_bg.png"),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Center(
-                      child: Text(
-                        getTranslated(context, 'save')!,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
-                        ),
-                      ),
-                    ),
-                  ),
+                  text: getTranslated(context, 'save')!,
                 ),
+                // InkWell(
+                //   borderRadius: BorderRadius.circular(25),
+                //   onTap: () {
+                //     if (guestName.isEmpty) {
+                //       setState(() {
+                //         guestNameError = getTranslated(context, "notValidName")!;
+                //       });
+                //     } else if (desc.isEmpty) {
+                //       setState(() {
+                //         descError = getTranslated(context, "notValidDesc")!;
+                //       });
+                //     } else
+                //       createOneTimePermission();
+                //   },
+                //   child: Container(
+                //     height: 50,
+                //     width: MediaQuery.of(context).size.width * 0.8,
+                //     decoration: BoxDecoration(
+                //       image: DecorationImage(
+                //         image: AssetImage("assets/button/button_bg.png"),
+                //         fit: BoxFit.cover,
+                //       ),
+                //       borderRadius: BorderRadius.circular(25),
+                //     ),
+                //     child: Center(
+                //       child: Text(
+                //         getTranslated(context, 'save')!,
+                //         style: TextStyle(
+                //           color: Colors.white,
+                //           fontSize: 16,
+                //           fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

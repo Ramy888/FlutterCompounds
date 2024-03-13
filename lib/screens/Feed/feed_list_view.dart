@@ -55,7 +55,7 @@ class FeedListView extends StatelessWidget {
                             AspectRatio(
                               aspectRatio: 2,
                               child: Image.asset(
-                                hotelData!.imagePath,
+                                hotelData!.imagePath as String,
                                 fit: BoxFit.cover,
                               ),
                             ),

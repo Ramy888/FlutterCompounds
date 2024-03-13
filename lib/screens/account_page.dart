@@ -21,6 +21,7 @@ import 'dart:io';
 
 import '../Helpers/ImageHelper.dart';
 import '../Models/invitaion.dart';
+import '../app_theme.dart';
 import '../main.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
@@ -291,229 +292,233 @@ class AccountPageState extends State<AccountPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(top: 65),
-        height: MediaQuery.of(context).size.height,
-        // decoration: BoxDecoration(
-        //   // Add background image here
-        //   image: DecorationImage(
-        //     image: AssetImage('assets/splash/white_bg.png'),
-        //     // Replace with your image asset
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),
-        child: isGettingUserData
-            ? Align(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                  strokeWidth: 4.0,
-                ),
-              )
-            : SingleChildScrollView(
-                child: RefreshIndicator(
-                  onRefresh: _refreshData,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          alignment: Alignment.topCenter,
-                          child: DropdownButton<Language>(
-                            underline: SizedBox(),
-                            iconSize: 30,
-                            hint: Text(
-                              getTranslated(context, 'change_language')!,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontFamily: _getCurrentLang() == "ar"
-                                    ? 'arFont'
-                                    : 'enBold',
+      body: Theme(
+        data: AppTheme.buildLightTheme(),
+        child: Container(
+          margin: EdgeInsets.only(top: 65),
+          height: MediaQuery.of(context).size.height,
+          // decoration: BoxDecoration(
+          //   // Add background image here
+          //   image: DecorationImage(
+          //     image: AssetImage('assets/splash/white_bg.png'),
+          //     // Replace with your image asset
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          child: isGettingUserData
+              ? Align(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                    strokeWidth: 4.0,
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: RefreshIndicator(
+                    onRefresh: _refreshData,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            alignment: Alignment.topCenter,
+                            child: DropdownButton<Language>(
+                              underline: SizedBox(),
+                              iconSize: 30,
+                              hint: Text(
+                                getTranslated(context, 'change_language')!,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontFamily: _getCurrentLang() == "ar"
+                                      ? 'arFont'
+                                      : 'enBold',
+                                ),
                               ),
-                            ),
-                            onChanged: (Language? language) {
-                              if (language != null) {
-                                _changeLanguage(language);
-                              }
-                            },
-                            items: Language.languageList()
-                                .map<DropdownMenuItem<Language>>(
-                                  (e) => DropdownMenuItem<Language>(
-                                    value: e,
-                                    child: Container(
-                                      margin: EdgeInsets.only(bottom: 5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          Image.asset(
-                                            e.flag,
-                                          ),
-                                          Text(e.name),
-                                        ],
+                              onChanged: (Language? language) {
+                                if (language != null) {
+                                  _changeLanguage(language);
+                                }
+                              },
+                              items: Language.languageList()
+                                  .map<DropdownMenuItem<Language>>(
+                                    (e) => DropdownMenuItem<Language>(
+                                      value: e,
+                                      child: Container(
+                                        margin: EdgeInsets.only(bottom: 5),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: <Widget>[
+                                            Image.asset(
+                                              e.flag,
+                                            ),
+                                            Text(e.name),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
+                                  )
+                                  .toList(),
+                            ),
                           ),
-                        ),
-                        // Circular image with edit button
-                        Container(
-                          alignment: Alignment.topCenter,
-                          child: Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              CircleAvatar(
-                                radius: radius,
-                                backgroundColor: Colors.transparent,
-                                child: ClipOval(
-                                  child: _buildImageWidget(),
-                                ),
-                              ),
-                              Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle, // To make it circular
-                                  color: Colors
-                                      .black26, // Set your desired background color
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.camera_alt,
-                                    color: Colors.white, // Set the icon color
+                          // Circular image with edit button
+                          Container(
+                            alignment: Alignment.topCenter,
+                            child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                CircleAvatar(
+                                  radius: radius,
+                                  backgroundColor: Colors.transparent,
+                                  child: ClipOval(
+                                    child: _buildImageWidget(),
                                   ),
-                                  onPressed: () {
-                                    requestPermissions();
-                                  },
                                 ),
-                              ),
-                            ],
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    shape:
+                                        BoxShape.circle, // To make it circular
+                                    color: Colors
+                                        .black26, // Set your desired background color
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.white, // Set the icon color
+                                    ),
+                                    onPressed: () {
+                                      requestPermissions();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 10),
-                              Text(uName,
+                          Container(
+                            alignment: Alignment.center,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 10),
+                                Text(uName,
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontFamily: _getCurrentLang() == "ar"
+                                          ? 'arFont'
+                                          : 'enBold',
+                                    )),
+                                const SizedBox(height: 10),
+                                Text(
+                                  phone,
                                   style: TextStyle(
-                                    fontSize: 17,
                                     fontFamily: _getCurrentLang() == "ar"
                                         ? 'arFont'
                                         : 'enBold',
-                                  )),
-                              const SizedBox(height: 10),
-                              Text(
-                                phone,
-                                style: TextStyle(
-                                  fontFamily: _getCurrentLang() == "ar"
-                                      ? 'arFont'
-                                      : 'enBold',
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                umail,
-                                style: TextStyle(
-                                  fontFamily: _getCurrentLang() == "ar"
-                                      ? 'arFont'
-                                      : 'enBold',
+                                const SizedBox(height: 10),
+                                Text(
+                                  umail,
+                                  style: TextStyle(
+                                    fontFamily: _getCurrentLang() == "ar"
+                                        ? 'arFont'
+                                        : 'enBold',
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                uunit,
-                                style: TextStyle(
-                                  fontFamily: _getCurrentLang() == "ar"
-                                      ? 'arFont'
-                                      : 'enBold',
-                                ),
-                              )
-                            ],
+                                const SizedBox(height: 10),
+                                Text(
+                                  uunit,
+                                  style: TextStyle(
+                                    fontFamily: _getCurrentLang() == "ar"
+                                        ? 'arFont'
+                                        : 'enBold',
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        Container(
-                          alignment: Alignment.bottomCenter,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _showBottomSheet(context);
-                            },
-                            child: Text(
-                              getTranslated(context, "editProfile")!,
-                              style: TextStyle(
-                                fontFamily: _getCurrentLang() == "ar"
-                                    ? 'arFont'
-                                    : 'enBold',
+                          const SizedBox(height: 20),
+                          Container(
+                            alignment: Alignment.bottomCenter,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _showBottomSheet(context);
+                              },
+                              child: Text(
+                                getTranslated(context, "editProfile")!,
+                                style: TextStyle(
+                                  fontFamily: _getCurrentLang() == "ar"
+                                      ? 'arFont'
+                                      : 'enBold',
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        Visibility(
-                          visible: hasRelatedMembers,
-                          replacement: SizedBox(height: 1),
-                          child: Column(
-                            children: [
-                              DefaultTabController(
-                                length: 2,
-                                child: Column(
-                                  children: [
-                                    TabBar(
-                                      controller: _tabController,
-                                      tabs: [
-                                        if (familyMembers.isNotEmpty)
-                                          Tab(
-                                            text: getTranslated(
-                                                context, "family")!,
-                                          ),
-                                        if (renterMembers.isNotEmpty)
-                                          Tab(
-                                              text: getTranslated(
-                                                  context, "tenant")!),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.5,
-                                      child: TabBarView(
+                          const SizedBox(height: 20),
+                          Visibility(
+                            visible: hasRelatedMembers,
+                            replacement: SizedBox(height: 1),
+                            child: Column(
+                              children: [
+                                DefaultTabController(
+                                  length: 2,
+                                  child: Column(
+                                    children: [
+                                      TabBar(
                                         controller: _tabController,
-                                        children: [
-                                          // Family ListView
+                                        tabs: [
                                           if (familyMembers.isNotEmpty)
-                                            ListView.builder(
-                                              itemCount: familyMembers.length,
-                                              itemBuilder: (context, index) {
-                                                return buildMemberCard(
-                                                    familyMembers[index]);
-                                              },
+                                            Tab(
+                                              text: getTranslated(
+                                                  context, "family")!,
                                             ),
-                                          // Tenant ListView
                                           if (renterMembers.isNotEmpty)
-                                            ListView.builder(
-                                              itemCount: renterMembers.length,
-                                              itemBuilder: (context, index) {
-                                                return buildMemberCard(
-                                                    renterMembers[index]);
-                                              },
-                                            ),
+                                            Tab(
+                                                text: getTranslated(
+                                                    context, "tenant")!),
                                         ],
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.5,
+                                        child: TabBarView(
+                                          controller: _tabController,
+                                          children: [
+                                            // Family ListView
+                                            if (familyMembers.isNotEmpty)
+                                              ListView.builder(
+                                                itemCount: familyMembers.length,
+                                                itemBuilder: (context, index) {
+                                                  return buildMemberCard(
+                                                      familyMembers[index]);
+                                                },
+                                              ),
+                                            // Tenant ListView
+                                            if (renterMembers.isNotEmpty)
+                                              ListView.builder(
+                                                itemCount: renterMembers.length,
+                                                itemBuilder: (context, index) {
+                                                  return buildMemberCard(
+                                                      renterMembers[index]);
+                                                },
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }
@@ -818,7 +823,8 @@ class AccountPageState extends State<AccountPage>
       var _compressedImage = await ImageHelper.compress(image: image);
       final _sizeInKbAfter = _compressedImage.lengthSync() / 1024;
       print('After Compress $_sizeInKbAfter kb');
-      var _croppedImage = await ImageHelper.cropImage(_compressedImage, context);
+      var _croppedImage =
+          await ImageHelper.cropImage(_compressedImage, context);
       if (_croppedImage == null) {
         return;
       }
@@ -882,10 +888,9 @@ class AccountPageState extends State<AccountPage>
                 fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
               )),
           content: Text(getTranslated(context, "sureLogout")!,
-          style: TextStyle(
-            fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
-          )
-          ),
+              style: TextStyle(
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+              )),
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
@@ -915,10 +920,9 @@ class AccountPageState extends State<AccountPage>
                 fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
               )),
           content: Text(getTranslated(context, "sureDelete")!,
-          style: TextStyle(
-            fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
-          )
-          ),
+              style: TextStyle(
+                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+              )),
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
@@ -934,10 +938,9 @@ class AccountPageState extends State<AccountPage>
                 deleteAccount();
               },
               child: Text(getTranslated(context, "del")!,
-              style: TextStyle(
-                fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
-              )
-              ),
+                  style: TextStyle(
+                    fontFamily: _getCurrentLang() == 'ar' ? 'arFont' : 'enBold',
+                  )),
             ),
           ]),
     );
@@ -952,7 +955,8 @@ class AccountPageState extends State<AccountPage>
     // Navigator.of(context).pushNamedAndRemoveUntil(
     //     LoginPage.routeName, (Route<dynamic> route) => false);
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (BuildContext context) => LoginPage(title: getTranslated(context, "login")!),
+      builder: (BuildContext context) =>
+          LoginPage(title: getTranslated(context, "login")!),
     ));
   }
 

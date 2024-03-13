@@ -198,11 +198,11 @@ class DetailPageState extends State<DetailPage> {
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           // Add background image here
-          image: DecorationImage(
-            image: AssetImage('assets/splash/white_bg.png'),
-            // Replace with your image asset
-            fit: BoxFit.cover,
-          ),
+          // image: DecorationImage(
+          //   image: AssetImage('assets/splash/white_bg.png'),
+          //   // Replace with your image asset
+          //   fit: BoxFit.cover,
+          // ),
         ),
         child: buildListViewByType(),
       ),

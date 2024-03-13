@@ -54,7 +54,14 @@ class _FeedScreenState extends State<FeedScreen> with TickerProviderStateMixin {
               Navigator.push<dynamic>(
                 context,
                 MaterialPageRoute<dynamic>(
-                  builder: (BuildContext context) => AddPost(),
+                  builder: (BuildContext context) => AddPost(
+                    onNewPostAdded: (FeedListData newPost) {
+                      setState(() {
+                        hotelList.add(newPost);
+                      });
+                    },
+                    listIndex: hotelList.length,
+                  ),
                 ),
               );
             },
