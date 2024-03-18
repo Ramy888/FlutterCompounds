@@ -103,6 +103,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
           changeIndex(drawerIndexData);
           //callback from drawer for replacing screen as user needs with passing DrawerIndex(Enum index)
         },
+        //icon to open drawer
         screenView: screenView,
       ),
 

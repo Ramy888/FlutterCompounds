@@ -24,8 +24,12 @@ class AppTheme {
 
   static const Color background = Color(0xFFF2F3F8);
   static const Color nearlyDarkBlue = Color(0xFF2633C5);
+  // blue Colors.blue[600] to hex
+  static const Color nearlyBlue = Color(0xFF2196F3);
 
-  static const Color nearlyBlue = Color(0xFF00B6F0);
+  static const Color darkBlue = Color(0xFF2633D9);
+
+  // static const Color nearlyBlue = Color(0xFF00B6F0);
 
 
   static const TextTheme textTheme = TextTheme(

@@ -30,90 +30,199 @@ class _NotificationsState extends State<Notifications> {
   String email = "";
   String role = "";
 
-  List<OneNotification> notificationList = [];
+  // fill list with dummy notifications data of OneNotification object
+  List<OneNotification> notificationList = [
+    OneNotification(
+        notificationId: '1',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: 'Title 1',
+        body: 'Body 1',
+        photoUrl: 'https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg'
+    ),
+    OneNotification(
+      notificationId: '2',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: 'Title 2',
+        body: 'Body 2',
+        photoUrl: 'https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg'
+    ),
+    OneNotification(
+        notificationId: '3',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: "Title 3",
+        body: "Body 3",
+        photoUrl:
+            "https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg"),
+    OneNotification(
+        notificationId: '4',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: "Title 4",
+        body: "Body 4",
+        photoUrl:
+            "https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg"),
+    OneNotification(
+        notificationId: '5',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: "Title 5",
+        body: "Body 5",
+        photoUrl:
+            "https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg"),
+    OneNotification(
+        notificationId: '6',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: "Title 6",
+        body: "Body 6",
+        photoUrl:
+            "https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg"),
+    OneNotification(
+        notificationId: '7',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: "Title 7",
+        body: "Body 7",
+        photoUrl:
+            "https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg"),
+    OneNotification(
+        notificationId: '8',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: "Title 8",
+        body: "Body 8",
+        photoUrl:
+            "https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg"),
+    OneNotification(
+        notificationId: '9',
+        created_at: '2021-09-15 00:00:00',
+        notificationTo: '29',
+        data: '',
+        notificationType: 'toUser',
+        role: 'user',
+        title: "Title 9",
+        body: "Body 9",
+        photoUrl:
+            "https://sourcezone2.com/public/00.AccessControl/uploads/ads/1631630733.jpg"),
+  ];
 
-  Future<void> getNotifications() async {
-    getUserDataFromPreferences();
-
-    String adsNewsUrl =
-        "https://sourcezone2.com/public/00.AccessControl/get_notifications.php";
-
-    setState(() {
-      isGettingData = true;
-    });
-
-    bool isConnected = await checkInternetConnection();
-    if (isConnected) {
-      try {
-        final response = await http.post(
-          Uri.parse(adsNewsUrl),
-          headers: <String, String>{
-            // 'Content-Type': 'application/json; charset=UTF-8',
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: <String, String>{
-            'userId': userId,
-            'role': role,
-            'language': _getCurrentLang(),
-          },
-        );
-
-        if (response.statusCode == 200) {
-          setState(() {
-            isGettingData = false;
-          });
-
-          dev.log(TAG, name: "getNotifications", error: response.body);
-
-          NotificationModel notif = NotificationModel.fromJson(
-              jsonDecode(response.body) as Map<String, dynamic>);
-          if (notif.status == "OK") {
-            notificationList.clear();
-
-            for (int i = 0; i < notif.notifList.length; i++) {
-              //show notification to current user
-              if (notif.notifList[i].notificationType == "toUser" &&
-                  notif.notifList[i].notificationTo == "29") {
-                notificationList.add(notif.notifList[i]);
-                dev.log(TAG,
-                    name: "getNotifications List", error: notif.notifList[i]);
-              }
-            }
-          } else {
-            dev.log(TAG, error: "getNotifications API status Error: $response");
-            showToast(notif.info);
-          }
-        } else {
-          dev.log(TAG, error: "getNotifications API request Error: $response");
-          showToast(NotificationModel.fromJson(
-                  jsonDecode(response.body) as Map<String, dynamic>)
-              .info);
-
-          setState(() {
-            isGettingData = false;
-          });
-        }
-      } catch (e) {
-        dev.log(TAG, error: "getNotifications ExceptionError : $e");
-        showToast(getTranslated(context, "somethingWrong")!);
-        setState(() {
-          isGettingData = false;
-        });
-      }
-    } else {
-      showToast(getTranslated(context, "noInternetConnection")!);
-      setState(() {
-        isGettingData = false;
-      });
-      return;
-    }
-  }
+  // Future<void> getNotifications() async {
+  //   getUserDataFromPreferences();
+  //
+  //   String adsNewsUrl =
+  //       "https://sourcezone2.com/public/00.AccessControl/get_notifications.php";
+  //
+  //   setState(() {
+  //     isGettingData = true;
+  //   });
+  //
+  //   bool isConnected = await checkInternetConnection();
+  //   if (isConnected) {
+  //     try {
+  //       final response = await http.post(
+  //         Uri.parse(adsNewsUrl),
+  //         headers: <String, String>{
+  //           // 'Content-Type': 'application/json; charset=UTF-8',
+  //           'Content-Type': 'application/x-www-form-urlencoded',
+  //         },
+  //         body: <String, String>{
+  //           'userId': userId,
+  //           'role': role,
+  //           'language': _getCurrentLang(),
+  //         },
+  //       );
+  //
+  //       if (response.statusCode == 200) {
+  //         setState(() {
+  //           isGettingData = false;
+  //         });
+  //
+  //         dev.log(TAG, name: "getNotifications", error: response.body);
+  //
+  //         NotificationModel notif = NotificationModel.fromJson(
+  //             jsonDecode(response.body) as Map<String, dynamic>);
+  //         if (notif.status == "OK") {
+  //           notificationList.clear();
+  //
+  //           for (int i = 0; i < notif.notifList.length; i++) {
+  //             //show notification to current user
+  //             if (notif.notifList[i].notificationType == "toUser" &&
+  //                 notif.notifList[i].notificationTo == "29") {
+  //               notificationList.add(notif.notifList[i]);
+  //               dev.log(TAG,
+  //                   name: "getNotifications List", error: notif.notifList[i]);
+  //             }
+  //           }
+  //         } else {
+  //           dev.log(TAG, error: "getNotifications API status Error: $response");
+  //           showToast(notif.info);
+  //         }
+  //       } else {
+  //         dev.log(TAG, error: "getNotifications API request Error: $response");
+  //         showToast(NotificationModel.fromJson(
+  //                 jsonDecode(response.body) as Map<String, dynamic>)
+  //             .info);
+  //
+  //         setState(() {
+  //           isGettingData = false;
+  //         });
+  //       }
+  //     } catch (e) {
+  //       dev.log(TAG, error: "getNotifications ExceptionError : $e");
+  //       showToast(getTranslated(context, "somethingWrong")!);
+  //       setState(() {
+  //         isGettingData = false;
+  //       });
+  //     }
+  //   } else {
+  //     showToast(getTranslated(context, "noInternetConnection")!);
+  //     setState(() {
+  //       isGettingData = false;
+  //     });
+  //     return;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Notifications",
+          style: TextStyle(
+            fontFamily: _getCurrentLang() == "ar" ? 'arFont' : 'enBold',
+          ),
+        ),
+      ),
       body: Container(
-        margin: EdgeInsets.only(top: 65),
+        margin: EdgeInsets.only(top: 30),
         height: MediaQuery.of(context).size.height,
         // decoration: BoxDecoration(
         //   // Add background image here
@@ -383,7 +492,7 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   void initState() {
-    getNotifications();
+    // getNotifications();
     super.initState();
   }
 }

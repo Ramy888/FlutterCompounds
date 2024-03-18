@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pyramids_developments/localization/language_constants.dart';
+import 'package:pyramids_developments/widgets/ripple_effect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Models/User.dart';
 import '../app_theme.dart';
 import '../../localization/language_constants.dart';
-
+import '../language.dart';
+import '../main.dart';
 
 //projects page
 class Projects extends StatefulWidget {
@@ -20,6 +22,10 @@ class Projects extends StatefulWidget {
 class _ProjectsState extends State<Projects> {
   String TAG = "Projects";
   bool isGettingData = false;
+  bool isNews = true;
+  bool isMy = false;
+  bool isService = true;
+  String currentLang = "en";
 
   @override
   Widget build(BuildContext context) {
@@ -42,27 +48,42 @@ class _ProjectsState extends State<Projects> {
             child: Column(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(left: 20, right: 20),
+                  margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        'projects',
+                        'Notifications Settings',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.settings),
-                        onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => Settings(),
-                          //   ),
-                          // );
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'News Notifications',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      //switch button
+                      Switch(
+                        value: isNews,
+                        onChanged: (value) {
+                          setState(() {
+                            isNews = value;
+                          });
                         },
+                        activeTrackColor: Colors.blue[600],
+                        activeColor: AppTheme.darkBlue,
                       ),
                     ],
                   ),
@@ -73,22 +94,22 @@ class _ProjectsState extends State<Projects> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        'all_projects',
+                        'My Notifications',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => AddProject(),
-                          //   ),
-                          // );
+                      Switch(
+                        //change switch color when active to blue
+                        value: isMy,
+                        onChanged: (value) {
+                          setState(() {
+                            isMy = value;
+                          });
                         },
+                        activeTrackColor: Colors.blue[600],
+                        activeColor: AppTheme.nearlyDarkBlue,
                       ),
                     ],
                   ),
@@ -99,22 +120,21 @@ class _ProjectsState extends State<Projects> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                         'my_projects',
+                        'Service Notifications',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => AddProject(),
-                          //   ),
-                          // );
+                      Switch(
+                        value: isService,
+                        onChanged: (value) {
+                          setState(() {
+                            isService = value;
+                          });
                         },
+                        activeTrackColor: Colors.blue[600],
+                        activeColor: AppTheme.nearlyDarkBlue,
                       ),
                     ],
                   ),
@@ -125,75 +145,40 @@ class _ProjectsState extends State<Projects> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        'shared_projects',
+                        getTranslated(context, "change_language")!,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => AddProject
-                          //     (),
-                          //   ),
-                          // );
+                      RippleInkWell(
+                        onTap: () {
+                          if (_getCurrentLang() == 'ar') {
+                            _changeLanguage(Language(
+                                1, "assets/images/en.png", "English", "en"));
+                          } else {
+                            _changeLanguage(Language(
+                                2, "assets/images/ar.png", "العربية", "ar"));
+                          }
                         },
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'archived_projects',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                        child: IconButton(
+                          onPressed: () {
+                            if (_getCurrentLang() == 'ar') {
+                              _changeLanguage(Language(
+                                  1, "assets/images/en.png", "English", "en"));
+                            } else {
+                              _changeLanguage(Language(
+                                  2, "assets/images/ar.png", "العربية", "ar"));
+                            }
+                          },
+                          icon: Image.asset(
+                            _getCurrentLang() == 'ar'
+                                ? 'assets/images/en.png'
+                                : 'assets/images/ar.png',
+                            width: 40,
+                            height: 40,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => AddProject(),
-                          //   ),
-                          // );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'deleted_projects',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => AddProject(),
-                          //   ),
-                          // );
-                        },
                       ),
                     ],
                   ),
@@ -204,6 +189,12 @@ class _ProjectsState extends State<Projects> {
         ),
       ),
     );
+  }
+
+  void _changeLanguage(Language language) async {
+    Locale _locale = await setLocale(language.languageCode);
+    MyApp.setLocale(context, _locale);
+    currentLang = language.languageCode;
   }
 
   String _getCurrentLang() {

@@ -3,6 +3,8 @@ import 'package:pyramids_developments/widgets/custom_drawer/home_drawer.dart';
 import 'package:flutter/material.dart';
 
 import '../../screens/notifications.dart';
+import 'dart:developer' as dev;
+
 
 class DrawerUserController extends StatefulWidget {
   const DrawerUserController({
@@ -10,7 +12,7 @@ class DrawerUserController extends StatefulWidget {
     this.drawerWidth = 250,
     this.onDrawerCall,
     this.screenView,
-    this.animatedIconData = AnimatedIcons.arrow_menu,
+    this.animatedIconData = AnimatedIcons.arrow_menu ,
     this.menuView,
     this.drawerIsOpen,
     this.screenIndex,
@@ -35,6 +37,7 @@ class DrawerUserControllerState extends State<DrawerUserController>
   AnimationController? animationController;
 
   double scrolloffset = 0.0;
+  String TAG = "DrawerUserController";
 
   @override
   void initState() {
@@ -103,7 +106,7 @@ class DrawerUserControllerState extends State<DrawerUserController>
     // Define logo widget and notification icon button for AppBar
     Widget logoWidget = FlutterLogo(size: 28); // Example logo, replace with your own widget
     Widget notificationIconButton = IconButton(
-      icon: Icon(Icons.notifications, color: isLightMode ? AppTheme.dark_grey : AppTheme.white),
+      icon: Icon(Icons.notifications, color: isLightMode ? AppTheme.nearlyDarkBlue : AppTheme.white),
       onPressed: () {
         // navigate to Notifications screen
         Navigator.pushNamed(context, Notifications.routeName);
@@ -145,7 +148,9 @@ class DrawerUserControllerState extends State<DrawerUserController>
                           onDrawerClick();
                           try {
                             widget.onDrawerCall!(indexType);
-                          } catch (e) {}
+                          } catch (e) {
+                            dev.log(TAG, error: "drawer call error" + e.toString());
+                          }
                         },
                       ),
                     );

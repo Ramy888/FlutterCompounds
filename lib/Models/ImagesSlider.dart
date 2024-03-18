@@ -69,7 +69,8 @@ class OneImage{
       this.itemStatus,
       this.creatorId,
       this.created_at,
-      this.updated_at);
+      this.updated_at
+      );
 
   factory OneImage.fromJson(Map<String, dynamic> json) {
     return OneImage(

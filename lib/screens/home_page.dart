@@ -13,6 +13,7 @@ import 'package:video_player/video_player.dart';
 
 import '../Models/ImagesSlider.dart';
 import '../Models/User.dart';
+import '../app_theme.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,107 +39,174 @@ class HomePageState extends State<HomePage> {
   // late ChewieController _chewieController;
   // String videoUrl = "";
 
-  final List<OneImage> adsList = [];
+  //fill ads list with dummy data             "https://sourcezone2.com/public/00.AccessControl/ads/ads1.jpg",
+  final List<Ads> adsList = [
+    Ads(
+        itemId: '1',
+      itemPhotoUrl: 'https://sourcezone2.com/public/00.AccessControl/videos/ads11.jpg',
 
-  final List<OneImage> newsList = [];
 
-  final List<OneImage> mediaList = [];
+    ),
+    Ads(
+      itemId: '1',
+      itemPhotoUrl: 'https://sourcezone2.com/public/00.AccessControl/videos/ads22.jpg',
 
-  Future<void> getAdsNews() async {
-    getUserDataFromPreferences();
+    ),
 
-    String adsNewsUrl =
-        "https://sourcezone2.com/public/00.AccessControl/get_home_page.php";
+  ];
 
-    setState(() {
-      isGettingPhotos = true;
-    });
+  final List<NewsObject> newsList = [
+    NewsObject(
+      itemId: '1',
+      itemPhotoUrl: 'https://sourcezone2.com/public/00.AccessControl/videos/news11.jpg',
+      itemTitle: 'News Title 1',
+      itemDescription: 'News Description 1',
+      validFrom: '2021-09-01',
+      validTo: '2021-09-30',
+      itemStatus: 'active',
+    ),
+    NewsObject(
+      itemId: '2',
+      itemPhotoUrl: 'https://sourcezone2.com/public/00.AccessControl/videos/news22.jpg',
+      itemTitle: 'News Title 2',
+      itemDescription: 'News Description 2',
+      validFrom: '2021-09-01',
+      validTo: '2021-09-30',
+      itemStatus: 'active',
+    ),
+    NewsObject(
+      itemId: '3',
+      itemPhotoUrl: 'https://sourcezone2.com/public/00.AccessControl/videos/news33.jpg',
+      itemTitle: 'News Title 3',
+      itemDescription: 'News Description 3',
+      validFrom: '2021-09-01',
+      validTo: '2021-09-30',
+      itemStatus: 'active',
+    ),
+  ];
 
-    bool isConnected = await checkInternetConnection();
-    if (isConnected) {
-      try {
-        final response = await http.post(
-          Uri.parse(adsNewsUrl),
-          headers: <String, String>{
-            // 'Content-Type': 'application/json; charset=UTF-8',
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: <String, String>{
-            'userId': userId,
-            'role': role,
-            'language': _getCurrentLang(),
-          },
-        );
+  final List<MediaObject> mediaList = [
+    MediaObject(
+      itemId: '1',
+      itemPhotoUrl: 'https://sourcezone2.com/public/00.AccessControl/videos/media11.mp4',
+      itemTitle: 'Media Title 1',
+      validFrom: '2021-09-01',
+      validTo: '2021-09-30',
+      itemStatus: 'active',
+    ),
+    MediaObject(
+      itemId: '2',
+      itemPhotoUrl: 'https://sourcezone2.com/public/00.AccessControl/videos/media11.mp4',
+      itemTitle: 'Media Title 2',
+      validFrom: '2021-09-01',
+      validTo: '2021-09-30',
+      itemStatus: 'active',
+    ),
+    MediaObject(
+      itemId: '3',
+      itemPhotoUrl: 'https://sourcezone2.com/public/00.AccessControl/videos/media11.mp4',
+      itemTitle: 'Media Title 3',
+      validFrom: '2021-09-01',
+      validTo: '2021-09-30',
+      itemStatus: 'active',
+    ),
+  ];
 
-        if (response.statusCode == 200) {
-          setState(() {
-            isGettingPhotos = false;
-          });
-
-          dev.log(TAG, name: "getAdsNews", error: response.body);
-
-          Images imgs = Images.fromJson(
-              jsonDecode(response.body) as Map<String, dynamic>);
-          if (imgs.status == "OK") {
-            adsList.clear();
-            newsList.clear();
-            mediaList.clear();
-
-            for (int i = 0; i < imgs.adsList.length; i++) {
-              if (imgs.adsList[i].itemType == "ads") {
-                adsList.add(imgs.adsList[i]);
-                dev.log(TAG, name: "getAds", error: imgs.adsList[i]);
-              }
-            }
-
-            for (int i = 0; i < imgs.newsList.length; i++) {
-              if (imgs.newsList[i].itemType == "news") {
-                newsList.add(imgs.newsList[i]);
-                dev.log(TAG, name: "getNews", error: imgs.newsList[i]);
-              }
-            }
-
-            for (int i = 0; i < imgs.mediaList.length; i++) {
-              if (imgs.mediaList[i].itemType == "media") {
-                mediaList.add(imgs.mediaList[i]);
-                dev.log(TAG,
-                    name: "getMedia:// ",
-                    error: imgs.mediaList[i].itemPhotoUrl);
-              }
-            }
-
-            // if (imgs.mediaList[0].itemPhotoUrl.isNotEmpty) {
-            //   //_initializeVideo(imgs.mediaList[0].itemPhotoUrl);
-            //   videoUrl = imgs.mediaList[0].itemPhotoUrl;
-            // }
-          } else {
-            showToast(imgs.info);
-          }
-        } else {
-          dev.log(TAG, error: "API sent Error: $response");
-          showToast(
-              Images.fromJson(jsonDecode(response.body) as Map<String, dynamic>)
-                  .info);
-
-          setState(() {
-            isGettingPhotos = false;
-          });
-        }
-      } catch (e) {
-        dev.log(TAG, error: "ExceptionError : $e");
-        showToast(getTranslated(context, "somethingWrong")!);
-        setState(() {
-          isGettingPhotos = false;
-        });
-      }
-    } else {
-      showToast(getTranslated(context, "noInternetConnection")!);
-      setState(() {
-        isGettingPhotos = false;
-      });
-      return;
-    }
-  }
+  // Future<void> getAdsNews() async {
+  //   getUserDataFromPreferences();
+  //
+  //   String adsNewsUrl =
+  //       "https://sourcezone2.com/public/00.AccessControl/get_home_page.php";
+  //
+  //   setState(() {
+  //     isGettingPhotos = true;
+  //   });
+  //
+  //   bool isConnected = await checkInternetConnection();
+  //   if (isConnected) {
+  //     try {
+  //       final response = await http.post(
+  //         Uri.parse(adsNewsUrl),
+  //         headers: <String, String>{
+  //           // 'Content-Type': 'application/json; charset=UTF-8',
+  //           'Content-Type': 'application/x-www-form-urlencoded',
+  //         },
+  //         body: <String, String>{
+  //           'userId': userId,
+  //           'role': role,
+  //           'language': _getCurrentLang(),
+  //         },
+  //       );
+  //
+  //       if (response.statusCode == 200) {
+  //         setState(() {
+  //           isGettingPhotos = false;
+  //         });
+  //
+  //         dev.log(TAG, name: "getAdsNews", error: response.body);
+  //
+  //         Images imgs = Images.fromJson(
+  //             jsonDecode(response.body) as Map<String, dynamic>);
+  //         if (imgs.status == "OK") {
+  //           adsList.clear();
+  //           newsList.clear();
+  //           mediaList.clear();
+  //
+  //           for (int i = 0; i < imgs.adsList.length; i++) {
+  //             if (imgs.adsList[i].itemType == "ads") {
+  //               adsList.add(imgs.adsList[i]);
+  //               dev.log(TAG, name: "getAds", error: imgs.adsList[i]);
+  //             }
+  //           }
+  //
+  //           for (int i = 0; i < imgs.newsList.length; i++) {
+  //             if (imgs.newsList[i].itemType == "news") {
+  //               newsList.add(imgs.newsList[i]);
+  //               dev.log(TAG, name: "getNews", error: imgs.newsList[i]);
+  //             }
+  //           }
+  //
+  //           for (int i = 0; i < imgs.mediaList.length; i++) {
+  //             if (imgs.mediaList[i].itemType == "media") {
+  //               mediaList.add(imgs.mediaList[i]);
+  //               dev.log(TAG,
+  //                   name: "getMedia:// ",
+  //                   error: imgs.mediaList[i].itemPhotoUrl);
+  //             }
+  //           }
+  //
+  //           // if (imgs.mediaList[0].itemPhotoUrl.isNotEmpty) {
+  //           //   //_initializeVideo(imgs.mediaList[0].itemPhotoUrl);
+  //           //   videoUrl = imgs.mediaList[0].itemPhotoUrl;
+  //           // }
+  //         } else {
+  //           showToast(imgs.info);
+  //         }
+  //       } else {
+  //         dev.log(TAG, error: "API sent Error: $response");
+  //         showToast(
+  //             Images.fromJson(jsonDecode(response.body) as Map<String, dynamic>)
+  //                 .info);
+  //
+  //         setState(() {
+  //           isGettingPhotos = false;
+  //         });
+  //       }
+  //     } catch (e) {
+  //       dev.log(TAG, error: "ExceptionError : $e");
+  //       showToast(getTranslated(context, "somethingWrong")!);
+  //       setState(() {
+  //         isGettingPhotos = false;
+  //       });
+  //     }
+  //   } else {
+  //     showToast(getTranslated(context, "noInternetConnection")!);
+  //     setState(() {
+  //       isGettingPhotos = false;
+  //     });
+  //     return;
+  //   }
+  // }
 
   Future<void> _refreshData() async {
     // Implement your refresh logic here
@@ -302,7 +370,7 @@ class HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: _currentIndex == index
-                                ? Colors.purple
+                                ? AppTheme.nearlyDarkBlue
                                 : Colors.grey,
                           ),
                         );
@@ -326,7 +394,7 @@ class HomePageState extends State<HomePage> {
                                   style: TextStyle(
                                     fontSize: 15.0,
                                     fontStyle: FontStyle.normal,
-                                    color: Colors.blue.shade300,
+                                    color: AppTheme.chipBackground,
                                     fontFamily: _getCurrentLang() == "ar"
                                         ? 'arFont'
                                         : 'enBold',
@@ -636,7 +704,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    getAdsNews();
+    // getAdsNews();
     super.initState();
   }
 
@@ -648,7 +716,7 @@ class HomePageState extends State<HomePage> {
 }
 
 class VideoWidget extends StatefulWidget {
-  final OneImage videoData;
+  final MediaObject videoData;
 
   const VideoWidget({Key? key, required this.videoData}) : super(key: key);
 
@@ -734,4 +802,47 @@ class _PlayPauseOverlay extends StatelessWidget {
       ],
     );
   }
+}
+
+class Ads {
+  final String itemId;
+  final String itemPhotoUrl;
+
+  Ads({required this.itemId, required this.itemPhotoUrl});
+}
+
+class NewsObject {
+  final String itemId;
+  final String itemPhotoUrl;
+  final String itemTitle;
+  final String itemDescription;
+  final String validFrom;
+  final String validTo;
+  final String itemStatus;
+
+  NewsObject(
+      {required this.itemId,
+      required this.itemPhotoUrl,
+      required this.itemTitle,
+      required this.itemDescription,
+      required this.validFrom,
+      required this.validTo,
+      required this.itemStatus});
+}
+
+class MediaObject {
+  final String itemId;
+  final String itemPhotoUrl;
+  final String itemTitle;
+  final String validFrom;
+  final String validTo;
+  final String itemStatus;
+
+  MediaObject(
+      {required this.itemId,
+      required this.itemPhotoUrl,
+      required this.itemTitle,
+      required this.validFrom,
+      required this.validTo,
+      required this.itemStatus});
 }
